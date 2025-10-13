@@ -6,4 +6,8 @@
     </style>
 
     <style name="Theme.EECS4443GroupProjectGroup1" parent="Base.Theme.EECS4443GroupProjectGroup1" />
+
+    <style name="Theme.Splash" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
 </resources>
