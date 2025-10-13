@@ -19,7 +19,6 @@ public class SplashActivity extends AppCompatActivity {
 
         // Move to MainActivity after 2sec
         new Handler().postDelayed(() -> {
-            // MainActivity로 이동
             Intent intent = new Intent(SplashActivity.this, MainActivity.class);
             startActivity(intent);
             finish(); // SplashActivity End
