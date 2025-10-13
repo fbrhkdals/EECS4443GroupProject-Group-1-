@@ -12,17 +12,16 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash); // 레이아웃을 activity_splash로 설정
+        setContentView(R.layout.activity_splash);
 
         // Load img
-        ImageView logoImageView = findViewById(R.id.logo_image); // activity_splash.xml에서 ImageView의 ID 설정
+        ImageView logoImageView = findViewById(R.id.logo_image);
 
         // Move to MainActivity after 2sec
         new Handler().postDelayed(() -> {
-            // MainActivity로 이동
             Intent intent = new Intent(SplashActivity.this, MainActivity.class);
             startActivity(intent);
             finish(); // SplashActivity End
-        }, 2000); // 2000ms (2초)
+        }, 2000);
     }
 }
