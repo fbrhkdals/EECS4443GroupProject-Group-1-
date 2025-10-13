@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Attempt login through ViewModel
         loginViewModel.login(username, password).observe(this, user -> {
-            if (user == null) {
+            if (user != null) {
                 // Login successful
                 Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show();
                 // Save the username if "Remember Me" is checked
