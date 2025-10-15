@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private MaterialButton loginButton;
     private TextView createAccountText;    // "Create account" TextView (blue and underlined)
 
-    private LoginViewModel loginViewModel;
+    private UserViewModel userViewModel;
 
     private SharedPreferences sharedPreferences;
 
@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
 
         // Initialize ViewModel
-        loginViewModel = new LoginViewModel(getApplication());
+        userViewModel = new UserViewModel(getApplication());
 
         // Check for auto-login using saved username in SharedPreferences
         String savedUsername = sharedPreferences.getString("username", null);
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Attempt login through ViewModel
-        loginViewModel.login(username, password).observe(this, user -> {
+        userViewModel.login(username, password).observe(this, user -> {
             if (user != null) {
                 // Login successful
                 Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show();
