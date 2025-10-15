@@ -16,7 +16,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.button.MaterialButton;
 
-public class CreateAccountActivity extends AppCompatActivity {
+public class SignupActivity extends AppCompatActivity {
 
     private EditText usernameInput, passwordInput, emailInput;
     private MaterialButton signupBtn;
@@ -48,9 +48,26 @@ public class CreateAccountActivity extends AppCompatActivity {
 
         // Back button: navigate to MainActivity and finish current activity
         backButton.setOnClickListener(v -> {
-            Intent intent = new Intent(CreateAccountActivity.this, MainActivity.class);
+            Intent intent = new Intent(SignupActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
+        });
+
+        // Handle password visibility toggle on drawable end click
+        passwordInput.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                final int DRAWABLE_END = 2;
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    int drawableWidth = passwordInput.getCompoundDrawables()[DRAWABLE_END].getBounds().width();
+                    int touchableAreaStart = passwordInput.getRight() - passwordInput.getPaddingEnd() - drawableWidth;
+                    if (event.getRawX() >= touchableAreaStart) {
+                        togglePasswordVisibility();
+                        return true;
+                    }
+                }
+                return false;
+            }
         });
 
         signupBtn.setOnClickListener(v -> {
@@ -104,7 +121,7 @@ public class CreateAccountActivity extends AppCompatActivity {
             }
 
             // Check if username exists
-            userViewModel.getUserByUsername(username).observe(CreateAccountActivity.this, user -> {
+            userViewModel.getUserByUsername(username).observe(SignupActivity.this, user -> {
                 if (user != null) {
                     // Username exists — show error on username field
                     usernameError.setText(getString(R.string.error_username_exists));
@@ -119,30 +136,14 @@ public class CreateAccountActivity extends AppCompatActivity {
                     userViewModel.insert(newUser);
 
                     // Show toast only on successful signup
-                    Toast.makeText(CreateAccountActivity.this, "Signup successful!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignupActivity.this, "Signup successful!", Toast.LENGTH_SHORT).show();
 
                     // Navigate to MainActivity
-                    Intent intent = new Intent(CreateAccountActivity.this, MainActivity.class);
+                    Intent intent = new Intent(SignupActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();
                 }
             });
-        });
-
-        // Handle password visibility toggle on drawable end click
-        passwordInput.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                final int DRAWABLE_END = 2; // right drawable index
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    // Check if user clicked on the right drawable (eye icon)
-                    if (event.getRawX() >= (passwordInput.getRight() - passwordInput.getCompoundDrawables()[DRAWABLE_END].getBounds().width())) {
-                        togglePasswordVisibility();
-                        return true;
-                    }
-                }
-                return false;
-            }
         });
     }
 
