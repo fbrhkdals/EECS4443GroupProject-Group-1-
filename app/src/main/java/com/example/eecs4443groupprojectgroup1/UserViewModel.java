@@ -23,12 +23,12 @@ public class UserViewModel extends AndroidViewModel {
         return userRepository.login(username, password);
     }
 
-    // username으로 사용자 조회 (중복 체크용)
+    // Get username (To check duplication)
     public LiveData<User> getUserByUsername(String username) {
         return userRepository.getUserByUsername(username);
     }
 
-    // 신규 사용자 삽입
+    // Insert new User
     public void insert(User user) {
         userRepository.insert(user);
     }
