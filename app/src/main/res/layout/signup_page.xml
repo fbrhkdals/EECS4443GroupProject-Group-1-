@@ -6,17 +6,13 @@
     android:layout_height="match_parent"
     android:background="@drawable/loginbackground">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <FrameLayout
+                android:id="@+id/top_bar_container"
                 android:layout_width="match_parent"
                 android:layout_height="100dp">
 
@@ -33,6 +29,12 @@
                     android:background="@android:color/transparent"
                     android:src="@drawable/arrow_back" />
             </FrameLayout>
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/top_bar_container"
+                android:fillViewport="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -132,6 +134,6 @@
                     app:strokeWidth="3dp"
                     app:backgroundTint="@android:color/transparent" />
             </LinearLayout>
+            </ScrollView>
         </LinearLayout>
-    </ScrollView>
 </RelativeLayout>

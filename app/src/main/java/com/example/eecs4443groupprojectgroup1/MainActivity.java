@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Navigate to CreateAccountActivity
     private void navigateToCreateAccount() {
-        Intent intent = new Intent(MainActivity.this, CreateAccountActivity.class);
+        Intent intent = new Intent(MainActivity.this, SignupActivity.class);
         startActivity(intent);
     }
 
