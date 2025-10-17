@@ -22,9 +22,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".MainActivity" android:exported="false"/>
+        <activity android:name=".MainActivity" android:windowSoftInputMode="adjustResize" android:exported="false"/>
         <activity android:name=".HomeActivity" android:exported="false" />
-        <activity android:name=".SignupActivity" android:exported="false" />
+        <activity android:name=".SignupActivity" android:windowSoftInputMode="adjustResize" android:exported="false" />
 
     </application>
 
