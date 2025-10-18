@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">EECS4443GroupProject(Group 1)</string>
+
+    <!-- Error messages for form validation -->
+    <string name="error_username_required">Username is required</string>
+    <string name="error_password_required">Password is required</string>
+    <string name="error_password_invalid">Password must contain at least one uppercase letter and one special character</string>
+    <string name="error_email_required">Email is required</string>
+    <string name="error_email_invalid">Please enter a valid email address</string>
+    <string name="error_username_exists">Username already exists</string>
 </resources>

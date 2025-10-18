@@ -17,5 +17,6 @@ public class User {
     public String email;
     public String dateOfBirth;
     public String description;
-    public String userIcon;
+    public String userIcon; //image
+    public String gender;
 }

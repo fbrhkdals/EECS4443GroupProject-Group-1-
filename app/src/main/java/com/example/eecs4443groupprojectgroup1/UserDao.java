@@ -13,10 +13,10 @@ public interface UserDao {
     void insert(User user);
 
     // Login: Find a user where the username and password match
-    @Query("SELECT * FROM users WHERE username = :username AND password = :password LIMIT 1")
+    @Query("SELECT * FROM users WHERE LOWER(username) = LOWER(:username) AND password = :password LIMIT 1")
     LiveData<User> login(String username, String password);
 
     // Get user by username: Find a user by their username
-    @Query("SELECT * FROM users WHERE username = :username LIMIT 1")
+    @Query("SELECT * FROM users WHERE LOWER(username) = LOWER(:username) LIMIT 1")
     LiveData<User> getUserByUsername(String username);
 }
