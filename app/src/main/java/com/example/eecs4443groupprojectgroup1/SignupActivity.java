@@ -20,6 +20,7 @@ public class SignupActivity extends AppCompatActivity {
 
     private EditText usernameInput, passwordInput, emailInput;
     private MaterialButton signupBtn;
+    private ImageButton backButton;
     private UserViewModel userViewModel;
 
     // Declare TextViews for error messages above the EditTexts
@@ -35,7 +36,7 @@ public class SignupActivity extends AppCompatActivity {
         passwordInput = findViewById(R.id.password_input);
         emailInput = findViewById(R.id.email_input);
         signupBtn = findViewById(R.id.signup_btn);
-        ImageButton backButton = findViewById(R.id.back_button);
+        backButton = findViewById(R.id.back_button);
 
         // Initialize TextViews for error messages
         usernameError = findViewById(R.id.username_error);

@@ -2,34 +2,149 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    android:background="@drawable/loginbackground"
-    android:gravity="center">
+    android:background="@drawable/loginbackground">
+
+    <FrameLayout
+        android:id="@+id/top_bar_container"
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/topbar" />
+
+        <TextView
+            android:id="@+id/top_bar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:text=""
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="16dp"
+            android:textStyle="bold"
+            android:textSize="28sp" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_below="@id/top_bar_container"
+        android:layout_above="@id/taskbar"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp" />
 
     <LinearLayout
+        android:id="@+id/taskbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="95dp"
+        android:orientation="horizontal"
+        android:background="#fea80f"
         android:gravity="center"
-        android:orientation="vertical">
-    <TextView
-        android:id="@+id/welcome_message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Welcome!"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        android:layout_centerInParent="true" />
+        android:layout_alignParentBottom="true">
 
-    <Button
-        android:id="@+id/logout_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Logout"
-        android:textColor="#2196F3"
-        android:background="@color/white"
-        android:layout_below="@id/welcome_message"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="24dp"/>
+        <LinearLayout
+            android:id="@+id/taskbar_friends"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="top|center_horizontal"
+            android:clickable="true"
+            android:focusable="true">
+
+            <View
+                android:id="@+id/indicator_friends"
+                android:layout_width="100dp"
+                android:layout_height="8dp"
+                android:background="@drawable/taskbar_indicator"
+                android:visibility="gone" />
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="12dp"
+                android:src="@drawable/chat"
+                android:contentDescription="Friends" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-5dp"
+                android:text="Friends"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/taskbar_chat"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="top|center_horizontal"
+            android:clickable="true"
+            android:focusable="true">
+
+            <View
+                android:id="@+id/indicator_chat"
+                android:layout_width="100dp"
+                android:layout_height="8dp"
+                android:background="@drawable/taskbar_indicator"
+                android:visibility="gone" />
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="12dp"
+                android:src="@drawable/chat"
+                android:contentDescription="Chat" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chat"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:textSize="12sp"
+                android:layout_marginTop="-5dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/taskbar_settings"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="top|center_horizontal"
+            android:clickable="true"
+            android:focusable="true">
+
+            <View
+                android:id="@+id/indicator_settings"
+                android:layout_width="100dp"
+                android:layout_height="8dp"
+                android:background="@drawable/taskbar_indicator"
+                android:visibility="gone" />
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="12dp"
+                android:src="@drawable/chat"
+                android:contentDescription="Settings" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="More"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:textSize="12sp"
+                android:layout_marginTop="-5dp" />
+        </LinearLayout>
     </LinearLayout>
 </RelativeLayout>
