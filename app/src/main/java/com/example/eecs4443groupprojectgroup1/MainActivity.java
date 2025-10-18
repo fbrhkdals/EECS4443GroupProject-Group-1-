@@ -24,7 +24,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView createAccountText;
     private ImageView passwordToggleIcon;
 
-    private LoginViewModel loginViewModel;
+    private UserViewModel userViewModel;
+
     private SharedPreferences sharedPreferences;
 
     // Track password visibility state
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
 
         // Initialize ViewModel
-        loginViewModel = new LoginViewModel(getApplication());
+        userViewModel = new UserViewModel(getApplication());
 
         // Auto-login
         String savedUsername = sharedPreferences.getString("username", null);
@@ -82,7 +83,8 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        loginViewModel.login(username, password).observe(this, user -> {
+        // Attempt login through ViewModel
+        userViewModel.login(username, password).observe(this, user -> {
             if (user != null) {
                 Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show();
 
@@ -108,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Navigate to create account
     private void navigateToCreateAccount() {
-        Intent intent = new Intent(MainActivity.this, CreateAccountActivity.class);
+        Intent intent = new Intent(MainActivity.this, SignupActivity.class);
         startActivity(intent);
     }
 
