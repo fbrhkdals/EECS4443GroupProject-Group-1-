@@ -21,10 +21,9 @@ public class MainActivity extends AppCompatActivity {
     private EditText passwordInput;
     private CheckBox rememberMeCheckbox;
     private MaterialButton loginButton;
-    private TextView createAccountText;    // "Create account" TextView (blue and underlined)
+    private TextView createAccountText;
 
     private UserViewModel userViewModel;
-
     private SharedPreferences sharedPreferences;
 
     @Override
@@ -37,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         passwordInput = findViewById(R.id.password_input);
         rememberMeCheckbox = findViewById(R.id.remember_me_checkbox);
         loginButton = findViewById(R.id.login_btn);
-        createAccountText = findViewById(R.id.create_account_link); // Create account TextView (blue and underlined)
+        createAccountText = findViewById(R.id.create_account_link);
 
         // Initialize SharedPreferences
         sharedPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
@@ -45,15 +44,17 @@ public class MainActivity extends AppCompatActivity {
         // Initialize ViewModel
         userViewModel = new UserViewModel(getApplication());
 
-        // Check for auto-login using saved username in SharedPreferences
-        String savedUsername = sharedPreferences.getString("username", null);
-        if (savedUsername != null) {
-            // If username exists, navigate directly to HomeActivity
+        // Check for auto-login using saved preferences
+        String savedUsername = sharedPreferences.getString("username", null); // Always saved
+        boolean autoLogin = sharedPreferences.getBoolean("autoLogin", false); // Checkbox based
+
+        if (savedUsername != null && autoLogin) {
+            // If auto-login is enabled, navigate directly to HomeActivity
             Intent intent = new Intent(MainActivity.this, HomeActivity.class);
             intent.putExtra("username", savedUsername);
             startActivity(intent);
-            finish();  // Finish MainActivity so user can't go back
-            return;    // Ensure that the rest of onCreate doesn't execute if auto-login happens
+            finish(); // Prevent back navigation to login
+            return; // Ensure rest of onCreate is not executed
         }
 
         // Set underline for "Create Account" TextView
@@ -66,19 +67,15 @@ public class MainActivity extends AppCompatActivity {
         createAccountText.setOnClickListener(v -> navigateToCreateAccount());
 
         // Handle password visibility toggle on drawable end click
-        passwordInput.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                final int DRAWABLE_END = 2; // right drawable index
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    // Check if user clicked on the right drawable (eye icon)
-                    if (event.getRawX() >= (passwordInput.getRight() - passwordInput.getCompoundDrawables()[DRAWABLE_END].getBounds().width())) {
-                        togglePasswordVisibility();
-                        return true;
-                    }
+        passwordInput.setOnTouchListener((v, event) -> {
+            final int DRAWABLE_END = 2; // right drawable index
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                if (event.getRawX() >= (passwordInput.getRight() - passwordInput.getCompoundDrawables()[DRAWABLE_END].getBounds().width())) {
+                    togglePasswordVisibility();
+                    return true;
                 }
-                return false;
             }
+            return false;
         });
     }
 
@@ -98,14 +95,20 @@ public class MainActivity extends AppCompatActivity {
             if (user != null) {
                 // Login successful
                 Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show();
-                // Save the username if "Remember Me" is checked
-                if (rememberMeCheckbox.isChecked()) {
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString("username", username);
-                    editor.apply();
-                }
+
+                // Save username and auto-login preference
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                // Always save username (for later use in SettingsFragment)
+                editor.putString("username", username);
+
+                // Save auto-login preference if "Remember Me" is checked
+                editor.putBoolean("autoLogin", rememberMeCheckbox.isChecked());
+
+                editor.apply();
+
                 // Navigate to HomeActivity
-                navigateToHome();
+                navigateToHome(username);
             } else {
                 // Login failed
                 Toast.makeText(this, "Invalid username or password", Toast.LENGTH_SHORT).show();
@@ -114,10 +117,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Navigate to HomeActivity
-    private void navigateToHome() {
+    private void navigateToHome(String username) {
         Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+        intent.putExtra("username", username);
         startActivity(intent);
-        finish();
+        finish(); // Finish MainActivity so user can't go back
     }
 
     // Navigate to CreateAccountActivity
@@ -132,12 +136,10 @@ public class MainActivity extends AppCompatActivity {
         if (inputType == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
             // Show password
             passwordInput.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-            // Change the drawable icon to "view"
             passwordInput.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.view, 0);
         } else {
             // Hide password
             passwordInput.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            // Change the drawable icon to "notview"
             passwordInput.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.notview, 0);
         }
 

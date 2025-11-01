@@ -32,4 +32,39 @@ public class UserViewModel extends AndroidViewModel {
     public void insert(User user) {
         userRepository.insert(user);
     }
+
+    // Update the username of a specific user
+    public void updateUsername(int id, String username) {
+        userRepository.updateUsername(id, username);
+    }
+
+    // Update the password of a specific user
+    public void updatePassword(int id, String password) {
+        userRepository.updatePassword(id, password);
+    }
+
+    // Update the email of a specific user
+    public void updateEmail(int id, String email) {
+        userRepository.updateEmail(id, email);
+    }
+
+    // Update the date of birth of a specific user
+    public void updateDateOfBirth(int id, String dateOfBirth) {
+        userRepository.updateDateOfBirth(id, dateOfBirth);
+    }
+
+    // Update the gender of a specific user
+    public void updateGender(int id, String gender) {
+        userRepository.updateGender(id, gender);
+    }
+
+    // Update the description of a specific user
+    public void updateDescription(int id, String description) {
+        userRepository.updateDescription(id, description);
+    }
+
+    // Update the user icon (URI or Base64) of a specific user
+    public void updateUserIcon(int id, String userIcon) {
+        userRepository.updateUserIcon(id, userIcon);
+    }
 }

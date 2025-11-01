@@ -1,6 +1,9 @@
 package com.example.eecs4443groupprojectgroup1;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -14,6 +17,9 @@ public class HomeActivity extends AppCompatActivity {
     private LinearLayout taskbarFriends, taskbarChat, taskbarSettings;
     private View indicatorFriends, indicatorChat, indicatorSettings;
     private TextView topBarTitle;
+
+    private static final String PREFS_NAME = "HomeActivityPrefs";
+    private static final String KEY_SELECTED_TAB = "selected_tab";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +37,9 @@ public class HomeActivity extends AppCompatActivity {
         indicatorChat = findViewById(R.id.indicator_chat);
         indicatorSettings = findViewById(R.id.indicator_settings);
 
-        // Set default fragment and indicator
-        selectTab(Tab.CHAT);
+        // Set default fragment and indicator based on shared preferences
+        Tab savedTab = getSavedTab();
+        selectTab(savedTab);
 
         // Set click listeners
         taskbarFriends.setOnClickListener(v -> selectTab(Tab.FRIENDS));
@@ -81,5 +88,17 @@ public class HomeActivity extends AppCompatActivity {
 
     private void updateTitle(String title) {
         topBarTitle.setText(title);
+    }
+
+    // Retrieve saved tab from SharedPreferences (or default to CHAT if null)
+    private Tab getSavedTab() {
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        String savedTab = sharedPreferences.getString(KEY_SELECTED_TAB, null); // Read saved tab, default to null
+        if (savedTab == null) {
+            return Tab.CHAT; // If null, return CHAT as default tab
+        } else {
+            Log.d("HomeActivity", "Retrieved Saved Tab: " + savedTab);
+            return Tab.valueOf(savedTab); // Convert string back to enum
+        }
     }
 }
