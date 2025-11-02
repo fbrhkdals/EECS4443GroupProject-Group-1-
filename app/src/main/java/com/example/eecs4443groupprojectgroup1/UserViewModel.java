@@ -23,7 +23,7 @@ public class UserViewModel extends AndroidViewModel {
         return userRepository.login(username, password);
     }
 
-    // Get username (To check duplication)
+    // Get user by username (To check duplication)
     public LiveData<User> getUserByUsername(String username) {
         return userRepository.getUserByUsername(username);
     }
@@ -31,5 +31,40 @@ public class UserViewModel extends AndroidViewModel {
     // Insert new User
     public void insert(User user) {
         userRepository.insert(user);
+    }
+
+    // Update the username of a specific user by username
+    public void updateUsername(String username, String newUsername) {
+        userRepository.updateUsername(username, newUsername);
+    }
+
+    // Update the password of a specific user by username
+    public void updatePassword(String username, String password) {
+        userRepository.updatePassword(username, password);
+    }
+
+    // Update the email of a specific user by username
+    public void updateEmail(String username, String email) {
+        userRepository.updateEmail(username, email);
+    }
+
+    // Update the date of birth of a specific user by username
+    public void updateDateOfBirth(String username, String dateOfBirth) {
+        userRepository.updateDateOfBirth(username, dateOfBirth);
+    }
+
+    // Update the gender of a specific user by username
+    public void updateGender(String username, String gender) {
+        userRepository.updateGender(username, gender);
+    }
+
+    // Update the description of a specific user by username
+    public void updateDescription(String username, String description) {
+        userRepository.updateDescription(username, description);
+    }
+
+    // Update the user icon (URI or Base64) of a specific user by username
+    public void updateUserIcon(String username, String userIcon) {
+        userRepository.updateUserIcon(username, userIcon);
     }
 }

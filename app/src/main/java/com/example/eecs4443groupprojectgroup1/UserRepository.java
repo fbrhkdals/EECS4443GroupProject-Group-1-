@@ -28,4 +28,39 @@ public class UserRepository {
     public void insert(User user) {
         new Thread(() -> userDao.insert(user)).start();  // Execute the insert operation in a background thread
     }
+
+    // Update the username for the given user (by username)
+    public void updateUsername(String currentUsername, String newUsername) {
+        new Thread(() -> userDao.updateUsername(currentUsername, newUsername)).start();
+    }
+
+    // Update the password for the given user (by username)
+    public void updatePassword(String username, String password) {
+        new Thread(() -> userDao.updatePassword(username, password)).start();
+    }
+
+    // Update the email for the given user (by username)
+    public void updateEmail(String username, String email) {
+        new Thread(() -> userDao.updateEmail(username, email)).start();
+    }
+
+    // Update the date of birth for the given user (by username)
+    public void updateDateOfBirth(String username, String dateOfBirth) {
+        new Thread(() -> userDao.updateDateOfBirth(username, dateOfBirth)).start();
+    }
+
+    // Update the gender for the given user (by username)
+    public void updateGender(String username, String gender) {
+        new Thread(() -> userDao.updateGender(username, gender)).start();
+    }
+
+    // Update the description for the given user (by username)
+    public void updateDescription(String username, String description) {
+        new Thread(() -> userDao.updateDescription(username, description)).start();
+    }
+
+    // Update the user icon (URI or Base64 string) for the given user (by username)
+    public void updateUserIcon(String username, String userIcon) {
+        new Thread(() -> userDao.updateUserIcon(username, userIcon)).start();
+    }
 }
