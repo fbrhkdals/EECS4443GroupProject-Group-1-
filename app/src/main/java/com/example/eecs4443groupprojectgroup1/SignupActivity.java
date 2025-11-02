@@ -19,7 +19,6 @@ public class SignupActivity extends AppCompatActivity {
 
     private EditText usernameInput, passwordInput, emailInput;
     private MaterialButton signupBtn;
-    private ImageButton backButton;
     private UserViewModel userViewModel;
 
     private TextView usernameError, passwordError, emailError;
