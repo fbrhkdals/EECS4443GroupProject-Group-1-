@@ -4,10 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Patterns;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,8 +22,10 @@ public class SignupActivity extends AppCompatActivity {
     private ImageButton backButton;
     private UserViewModel userViewModel;
 
-    // Declare TextViews for error messages above the EditTexts
     private TextView usernameError, passwordError, emailError;
+    private ImageView passwordToggleIcon;
+
+    private boolean isPasswordVisible = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,47 +37,32 @@ public class SignupActivity extends AppCompatActivity {
         passwordInput = findViewById(R.id.password_input);
         emailInput = findViewById(R.id.email_input);
         signupBtn = findViewById(R.id.signup_btn);
-        backButton = findViewById(R.id.back_button);
+        passwordToggleIcon = findViewById(R.id.password_toggle_icon);
 
         // Initialize TextViews for error messages
         usernameError = findViewById(R.id.username_error);
         passwordError = findViewById(R.id.password_error);
         emailError = findViewById(R.id.email_error);
 
-        // Initialize ViewModel for database operations
+        // Initialize ViewModel
         userViewModel = new ViewModelProvider.AndroidViewModelFactory(getApplication())
                 .create(UserViewModel.class);
 
-        // Back button: navigate to MainActivity and finish current activity
-        backButton.setOnClickListener(v -> {
-            Intent intent = new Intent(SignupActivity.this, MainActivity.class);
-            startActivity(intent);
+        // Back button: navigate to MainActivity and finish
+        findViewById(R.id.back_button).setOnClickListener(v -> {
+            startActivity(new Intent(SignupActivity.this, MainActivity.class));
             finish();
         });
 
-        // Handle password visibility toggle on drawable end click
-        passwordInput.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                final int DRAWABLE_END = 2;
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    int drawableWidth = passwordInput.getCompoundDrawables()[DRAWABLE_END].getBounds().width();
-                    int touchableAreaStart = passwordInput.getRight() - passwordInput.getPaddingEnd() - drawableWidth;
-                    if (event.getRawX() >= touchableAreaStart) {
-                        togglePasswordVisibility();
-                        return true;
-                    }
-                }
-                return false;
-            }
-        });
+        // Password visibility toggle icon click
+        passwordToggleIcon.setOnClickListener(v -> togglePasswordVisibility());
 
+        // Signup button logic
         signupBtn.setOnClickListener(v -> {
             String username = usernameInput.getText().toString().trim();
             String password = passwordInput.getText().toString().trim();
             String email = emailInput.getText().toString().trim();
 
-            // Initialize error flags for each field
             boolean isUsernameError = false;
             boolean isPasswordError = false;
             boolean isEmailError = false;
@@ -116,19 +102,18 @@ public class SignupActivity extends AppCompatActivity {
                 emailError.setVisibility(View.GONE);
             }
 
-            // If any field has an error, return early
+            // If any field has error, do not proceed
             if (isUsernameError || isPasswordError || isEmailError) {
                 return;
             }
 
-            // Check if username exists
+            // Check if user exists
             userViewModel.getUserByUsername(username).observe(SignupActivity.this, user -> {
                 if (user != null) {
-                    // Username exists — show error on username field
                     usernameError.setText(getString(R.string.error_username_exists));
                     usernameError.setVisibility(View.VISIBLE);
                 } else {
-                    // Create new user and insert into database
+                    // Create and insert user
                     User newUser = new User();
                     newUser.username = username;
                     newUser.password = password;
@@ -136,12 +121,8 @@ public class SignupActivity extends AppCompatActivity {
 
                     userViewModel.insert(newUser);
 
-                    // Show toast only on successful signup
                     Toast.makeText(SignupActivity.this, "Signup successful!", Toast.LENGTH_SHORT).show();
-
-                    // Navigate to MainActivity
-                    Intent intent = new Intent(SignupActivity.this, MainActivity.class);
-                    startActivity(intent);
+                    startActivity(new Intent(SignupActivity.this, MainActivity.class));
                     finish();
                 }
             });
@@ -149,11 +130,7 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     /**
-     * Validates the password.
-     * Checks if it contains at least one uppercase letter and one special character.
-     *
-     * @param password The password string to validate.
-     * @return true if valid, false otherwise.
+     * Checks if password is valid (at least one uppercase and one special character)
      */
     private boolean isValidPassword(String password) {
         boolean hasUppercase = !password.equals(password.toLowerCase());
@@ -161,22 +138,21 @@ public class SignupActivity extends AppCompatActivity {
         return hasUppercase && hasSpecial;
     }
 
-    // Toggle password visibility
+    /**
+     * Toggles password visibility
+     */
     private void togglePasswordVisibility() {
-        int inputType = passwordInput.getInputType();
-        if (inputType == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
-            // Show password
-            passwordInput.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-            // Change the drawable icon to "view"
-            passwordInput.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.view, 0);
-        } else {
+        if (isPasswordVisible) {
             // Hide password
             passwordInput.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            // Change the drawable icon to "notview"
-            passwordInput.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.notview, 0);
+            passwordToggleIcon.setImageResource(R.drawable.notview);
+        } else {
+            // Show password
+            passwordInput.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            passwordToggleIcon.setImageResource(R.drawable.view);
         }
 
-        // Maintain the cursor position at the end of the text
+        isPasswordVisible = !isPasswordVisible;
         passwordInput.setSelection(passwordInput.length());
     }
 }
