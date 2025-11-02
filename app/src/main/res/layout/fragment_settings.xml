@@ -20,7 +20,7 @@
             android:layout_width="90dp"
             android:layout_height="90dp"
             android:layout_marginEnd="16dp"
-            android:scaleType="centerInside"
+            android:scaleType="centerCrop"
             android:src="@drawable/user_icon"
             android:clipToOutline="true"
             android:background="@drawable/circle_background" />
@@ -45,6 +45,8 @@
                 android:layout_height="wrap_content"
                 android:textColor="#ffbe26"
                 android:textSize="21sp"
+                android:maxLines="3"
+                android:ellipsize="end"
                 android:layout_marginTop="8dp"/>
         </LinearLayout>
 
@@ -74,13 +76,13 @@
                 android:layout_height="50dp"
                 android:background="@drawable/circle_background"
                 android:scaleType="centerInside"
-                android:src="@drawable/chat" />
+                android:src="@drawable/user_icon" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="Settings"
+                android:text="Profile"
                 android:textColor="#ffbe26"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -101,7 +103,7 @@
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:src="@drawable/chat"
+                android:src="@drawable/signout"
                 android:background="@drawable/circle_background"
                 android:scaleType="centerInside" />
 
@@ -130,7 +132,7 @@
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:src="@drawable/chat"
+                android:src="@drawable/user_icon"
                 android:background="@drawable/circle_background"
                 android:scaleType="centerInside" />
 
@@ -159,7 +161,7 @@
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:src="@drawable/chat"
+                android:src="@drawable/user_icon"
                 android:background="@drawable/circle_background"
                 android:scaleType="centerInside" />
 

@@ -21,30 +21,30 @@ public interface UserDao {
     LiveData<User> getUserByUsername(String username);
 
     // Update username
-    @Query("UPDATE users SET username = :username WHERE id = :id")
-    void updateUsername(int id, String username);
+    @Query("UPDATE users SET username = :username WHERE username = :currentUsername")
+    void updateUsername(String currentUsername, String username);
 
     // Update password
-    @Query("UPDATE users SET password = :password WHERE id = :id")
-    void updatePassword(int id, String password);
+    @Query("UPDATE users SET password = :password WHERE username = :username")
+    void updatePassword(String username, String password);
 
     // Update email
-    @Query("UPDATE users SET email = :email WHERE id = :id")
-    void updateEmail(int id, String email);
+    @Query("UPDATE users SET email = :email WHERE username = :username")
+    void updateEmail(String username, String email);
 
     // Update dateOfBirth
-    @Query("UPDATE users SET dateOfBirth = :dateOfBirth WHERE id = :id")
-    void updateDateOfBirth(int id, String dateOfBirth);
+    @Query("UPDATE users SET dateOfBirth = :dateOfBirth WHERE username = :username")
+    void updateDateOfBirth(String username, String dateOfBirth);
 
     // Update gender
-    @Query("UPDATE users SET gender = :gender WHERE id = :id")
-    void updateGender(int id, String gender);
+    @Query("UPDATE users SET gender = :gender WHERE username = :username")
+    void updateGender(String username, String gender);
 
     // Update description
-    @Query("UPDATE users SET description = :description WHERE id = :id")
-    void updateDescription(int id, String description);
+    @Query("UPDATE users SET description = :description WHERE username = :username")
+    void updateDescription(String username, String description);
 
     // Update user icon (URI or Base64 string)
-    @Query("UPDATE users SET userIcon = :userIcon WHERE id = :id")
-    void updateUserIcon(int id, String userIcon);
+    @Query("UPDATE users SET userIcon = :userIcon WHERE username = :username")
+    void updateUserIcon(String username, String userIcon);
 }

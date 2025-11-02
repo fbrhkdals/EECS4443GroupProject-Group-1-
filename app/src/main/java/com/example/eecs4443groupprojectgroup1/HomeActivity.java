@@ -97,7 +97,6 @@ public class HomeActivity extends AppCompatActivity {
         if (savedTab == null) {
             return Tab.CHAT; // If null, return CHAT as default tab
         } else {
-            Log.d("HomeActivity", "Retrieved Saved Tab: " + savedTab);
             return Tab.valueOf(savedTab); // Convert string back to enum
         }
     }

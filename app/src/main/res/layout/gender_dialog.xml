@@ -1,0 +1,75 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@drawable/rounded_corner">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select Gender"
+        android:textSize="18sp"
+        android:layout_marginBottom="12dp"/>
+
+    <RadioGroup
+        android:id="@+id/gender_radio_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/radio_male"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Male"
+            android:textSize="16sp"
+            app:buttonTint="#fea80f"/>
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/radio_female"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Female"
+            android:textSize="16sp"
+            app:buttonTint="#fea80f"/>
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/radio_unspecified"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Unspecified"
+            android:textSize="16sp"
+            app:buttonTint="#fea80f"/>
+    </RadioGroup>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:textColor="#ffffff"
+            android:layout_marginRight="8dp"
+            app:cornerRadius="16dp"
+            android:backgroundTint="#fea80f"
+            android:padding="10dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/save_gender_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save"
+            android:textColor="#ffffff"
+            android:layout_marginEnd="8dp"
+            app:cornerRadius="16dp"
+            android:backgroundTint="#fea80f"
+            android:padding="10dp"/>
+    </LinearLayout>
+</LinearLayout>

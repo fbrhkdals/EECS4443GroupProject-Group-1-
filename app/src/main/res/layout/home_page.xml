@@ -65,7 +65,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginTop="12dp"
-                android:src="@drawable/chat"
+                android:src="@drawable/blabla_icon"
                 android:contentDescription="Friends" />
 
             <TextView
@@ -99,7 +99,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginTop="12dp"
-                android:src="@drawable/chat"
+                android:src="@drawable/blabla_icon"
                 android:contentDescription="Chat" />
 
             <TextView
@@ -133,7 +133,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginTop="12dp"
-                android:src="@drawable/chat"
+                android:src="@drawable/blabla_icon"
                 android:contentDescription="Settings" />
 
             <TextView
