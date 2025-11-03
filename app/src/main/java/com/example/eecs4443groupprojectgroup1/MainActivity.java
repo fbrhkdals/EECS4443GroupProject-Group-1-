@@ -111,7 +111,6 @@ public class MainActivity extends AppCompatActivity {
     // Navigate to home
     private void navigateToHome(String username) {
         Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-        intent.putExtra("username", username);
         startActivity(intent);
         finish(); // Finish MainActivity so user can't go back
     }
