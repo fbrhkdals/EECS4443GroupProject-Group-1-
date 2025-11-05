@@ -1,4 +1,4 @@
-package com.example.eecs4443groupprojectgroup1;
+package com.example.eecs4443groupprojectgroup1.Util_Helper;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

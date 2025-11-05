@@ -1,10 +1,8 @@
-package com.example.eecs4443groupprojectgroup1;
+package com.example.eecs4443groupprojectgroup1.Activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +16,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import java.io.File;
+import com.example.eecs4443groupprojectgroup1.Util_Helper.ImageUtil;
+import com.example.eecs4443groupprojectgroup1.R;
+import com.example.eecs4443groupprojectgroup1.Util_Helper.SharedPreferencesHelper;
+import com.example.eecs4443groupprojectgroup1.Util_Helper.SignOutHelper;
+import com.example.eecs4443groupprojectgroup1.User.UserViewModel;
 
 public class SettingsFragment extends Fragment {
 
@@ -29,8 +31,6 @@ public class SettingsFragment extends Fragment {
     private TextView userDescription;
     private LinearLayout signOutLayout;
     private LinearLayout settingsLayout;
-
-    private SharedPreferences sharedPreferences;
 
     @Nullable
     @Override
@@ -43,12 +43,21 @@ public class SettingsFragment extends Fragment {
         userIcon = view.findViewById(R.id.user_icon);
         userName = view.findViewById(R.id.user_name);
         userDescription = view.findViewById(R.id.user_description);
-        signOutLayout = view.findViewById(R.id.signout); // Sign out button
-        settingsLayout = view.findViewById(R.id.settings); // To Settings button
+        signOutLayout = view.findViewById(R.id.signout);
+        settingsLayout = view.findViewById(R.id.settings);
 
         // Initialize SharedPreferences
-        sharedPreferences = requireActivity().getSharedPreferences("loginPrefs", Context.MODE_PRIVATE);
-        String currentUsername = sharedPreferences.getString("username", ""); // Guaranteed not null
+        int currentUserId = requireActivity()
+                .getSharedPreferences("loginPrefs", Context.MODE_PRIVATE)
+                .getInt("userId", -1); // default -1 if not saved
+
+        if (currentUserId == -1) {
+            // userId not found, fallback behavior (optional)
+            userName.setText("Name");
+            userDescription.setText("User has no description.");
+            userIcon.setImageResource(R.drawable.user_icon);
+            return view;
+        }
 
         // Save the current tab as "CHAT"
         SharedPreferencesHelper.saveCurrentTab(requireActivity(), "CHAT");
@@ -56,8 +65,8 @@ public class SettingsFragment extends Fragment {
         // Initialize ViewModel
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
-        // Observe user data by username
-        userViewModel.getUserByUsername(currentUsername).observe(getViewLifecycleOwner(), user -> {
+        // Observe user data by userId
+        userViewModel.getUserById(currentUserId).observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
                 // Set name
                 userName.setText((user.username != null && !user.username.isEmpty()) ? user.username : "Name");
@@ -87,7 +96,7 @@ public class SettingsFragment extends Fragment {
         // Handle sign out
         signOutLayout.setOnClickListener(v -> SignOutHelper.signOut(requireActivity()));
 
-        // Navigate to Settings
+        // Navigate to ProfileActivity
         settingsLayout.setOnClickListener(v -> {
             Intent intent = new Intent(requireActivity(), ProfileActivity.class);
             startActivity(intent);

@@ -1,4 +1,4 @@
-package com.example.eecs4443groupprojectgroup1;
+package com.example.eecs4443groupprojectgroup1.Util_Helper;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -13,10 +13,13 @@ import android.widget.Toast;
 
 import androidx.lifecycle.LifecycleOwner;
 
+import com.example.eecs4443groupprojectgroup1.R;
+import com.example.eecs4443groupprojectgroup1.User.UserViewModel;
+
 public class DialogHelper {
 
     // Method to show the email edit dialog
-    public static void showEmailEditDialog(Context context, String currentUsername, UserViewModel userViewModel) {
+    public static void showEmailEditDialog(Context context, int currentUserId, UserViewModel userViewModel) {
         // Create the custom dialog for email
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
         View dialogView = LayoutInflater.from(context).inflate(R.layout.email_dialog, null);
@@ -44,7 +47,7 @@ public class DialogHelper {
 
             // Validate email format
             if (!newEmail.isEmpty() && isValidEmail(newEmail)) {
-                userViewModel.updateEmail(currentUsername, newEmail);  // Update email in the ViewModel
+                userViewModel.updateEmail(currentUserId, newEmail);  // Update email in the ViewModel
                 Toast.makeText(context, "Email updated successfully!", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();  // Close the dialog after updating the email
             } else {
@@ -66,7 +69,7 @@ public class DialogHelper {
     }
 
     // Method to show the password change dialog
-    public static void showPasswordChangeDialog(Context context, String currentUsername, UserViewModel userViewModel) {
+    public static void showPasswordChangeDialog(Context context, int currentUserId, UserViewModel userViewModel) {
         // Create the custom dialog for password change
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
         View dialogView = LayoutInflater.from(context).inflate(R.layout.password_dialog, null);
@@ -108,7 +111,7 @@ public class DialogHelper {
             }
 
             // If both checks pass, update the password
-            userViewModel.updatePassword(currentUsername, newPassword);  // Update password in the ViewModel
+            userViewModel.updatePassword(currentUserId, newPassword);  // Update password in the ViewModel
             Toast.makeText(context, "Password updated successfully!", Toast.LENGTH_SHORT).show();
             dialog.dismiss();  // Close the dialog after updating the password
         });
@@ -125,7 +128,7 @@ public class DialogHelper {
     }
 
     // Method to show the Date of Birth edit dialog
-    public static void showDateOfBirthDialog(Context context, String currentUsername, UserViewModel userViewModel) {
+    public static void showDateOfBirthDialog(Context context, int currentUserId, UserViewModel userViewModel) {
         // Create the custom dialog for date of birth
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
         View dialogView = LayoutInflater.from(context).inflate(R.layout.dateofbirth_dialog, null);
@@ -184,7 +187,7 @@ public class DialogHelper {
 
             // If date is valid, update the date of birth
             String formattedDate = year + " - " + month + " - " + day;
-            userViewModel.updateDateOfBirth(currentUsername, formattedDate);
+            userViewModel.updateDateOfBirth(currentUserId, formattedDate);
 
             // Notify success
             Toast.makeText(context, "Date of birth updated successfully!", Toast.LENGTH_SHORT).show();
@@ -203,7 +206,7 @@ public class DialogHelper {
     }
 
     // Method to show the Gender edit dialog
-    public static void showGenderEditDialog(Context context, String currentUsername, UserViewModel userViewModel) {
+    public static void showGenderEditDialog(Context context, int currentUserId, UserViewModel userViewModel) {
         // Create the custom dialog for gender
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
         View dialogView = LayoutInflater.from(context).inflate(R.layout.gender_dialog, null);
@@ -215,7 +218,7 @@ public class DialogHelper {
         AlertDialog dialog = builder.create();
 
         // **Handling LiveData asynchronously**: Observing user data asynchronously
-        userViewModel.getUserByUsername(currentUsername).observe((LifecycleOwner) context, user -> {
+        userViewModel.getUserById(currentUserId).observe((LifecycleOwner) context, user -> {
             if (user != null && user.gender != null) {
                 // Set the selected RadioButton based on the user's gender
                 if ("Male".equals(user.gender)) {
@@ -237,7 +240,7 @@ public class DialogHelper {
             String selectedGender = selectedRadioButton != null ? selectedRadioButton.getText().toString() : "Unspecified";
 
             // Update the user's gender in the ViewModel
-            userViewModel.updateGender(currentUsername, selectedGender);
+            userViewModel.updateGender(currentUserId, selectedGender);
 
             // Notify the user
             Toast.makeText(context, "Gender updated successfully!", Toast.LENGTH_SHORT).show();
@@ -256,7 +259,7 @@ public class DialogHelper {
     }
 
     // Method to show the Description edit dialog with 100 characters and 4 lines restriction
-    public static void showDescriptionEditDialog(Context context, String currentUsername, UserViewModel userViewModel) {
+    public static void showDescriptionEditDialog(Context context, int currentUserId, UserViewModel userViewModel) {
         // Create a builder for the dialog
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
@@ -277,7 +280,7 @@ public class DialogHelper {
 
         // **Handling LiveData asynchronously**: Observing user data asynchronously
         // Get the current description from the ViewModel and populate the EditText field
-        userViewModel.getUserByUsername(currentUsername).observe((LifecycleOwner) context, user -> {
+        userViewModel.getUserById(currentUserId).observe((LifecycleOwner) context, user -> {
             if (user != null && user.description != null) {
                 // Set the current description as the text in the EditText, but we'll hide it initially
                 descriptionEditText.setText(""); // Clear the existing text so only the hint is visible
@@ -322,7 +325,7 @@ public class DialogHelper {
                         .setMessage("Are you sure you want to leave the description empty?")
                         .setPositiveButton("Yes", (dialogInterface, i) -> {
                             // Save empty description
-                            userViewModel.updateDescription(currentUsername, null);
+                            userViewModel.updateDescription(currentUserId, null);
                             descriptionErrorTextView.setVisibility(View.GONE);
                             dialog.dismiss(); // Close the main dialog
                         })
@@ -335,7 +338,7 @@ public class DialogHelper {
             }
 
             // If valid (even if empty), update the description in the ViewModel
-            userViewModel.updateDescription(currentUsername, updatedDescription);
+            userViewModel.updateDescription(currentUserId, updatedDescription);
 
             // Notify the user that the description has been updated (or removed if empty)
             descriptionErrorTextView.setVisibility(View.GONE); // Hide error message if valid
