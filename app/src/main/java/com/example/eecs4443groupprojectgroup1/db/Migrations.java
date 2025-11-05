@@ -1,4 +1,4 @@
-package com.example.eecs4443groupprojectgroup1;
+package com.example.eecs4443groupprojectgroup1.db;
 
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;

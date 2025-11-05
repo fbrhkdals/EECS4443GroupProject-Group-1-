@@ -1,4 +1,4 @@
-package com.example.eecs4443groupprojectgroup1;
+package com.example.eecs4443groupprojectgroup1.Activity;
 
 import android.Manifest;
 import android.content.Context;
@@ -25,6 +25,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.eecs4443groupprojectgroup1.Util_Helper.DialogHelper;
+import com.example.eecs4443groupprojectgroup1.Util_Helper.ImageUtil;
+import com.example.eecs4443groupprojectgroup1.R;
+import com.example.eecs4443groupprojectgroup1.Util_Helper.SharedPreferencesHelper;
+import com.example.eecs4443groupprojectgroup1.User.UserViewModel;
+
 import java.io.IOException;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -38,7 +44,7 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView userName, userDescription, userEmail, userDateOfBirth, userGender;
 
     private SharedPreferences sharedPreferences;
-    private String currentUsername;
+    private int currentUserId;
 
     private LinearLayout descriptionLayout, emailLayout, dateOfBirthLayout, genderLayout, passwordLayout;
     private FrameLayout userIconLayout;
@@ -49,7 +55,7 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.profile);
 
         sharedPreferences = getSharedPreferences("loginPrefs", Context.MODE_PRIVATE);
-        currentUsername = sharedPreferences.getString("username", "");
+        currentUserId = sharedPreferences.getInt("userId", -1);
 
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
@@ -74,7 +80,7 @@ public class ProfileActivity extends AppCompatActivity {
             finish();
         });
 
-        userViewModel.getUserByUsername(currentUsername).observe(this, user -> {
+        userViewModel.getUserById(currentUserId).observe(this, user -> {
             if (user != null) {
                 userName.setText(user.username != null ? user.username : "Name");
                 userDescription.setText(user.description != null ? user.description : "User has no description.");
@@ -99,15 +105,15 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
         descriptionLayout.setOnClickListener(v ->
-                DialogHelper.showDescriptionEditDialog(ProfileActivity.this, currentUsername, userViewModel));
+                DialogHelper.showDescriptionEditDialog(ProfileActivity.this, currentUserId, userViewModel));
         emailLayout.setOnClickListener(v ->
-                DialogHelper.showEmailEditDialog(ProfileActivity.this, currentUsername, userViewModel));
+                DialogHelper.showEmailEditDialog(ProfileActivity.this, currentUserId, userViewModel));
         dateOfBirthLayout.setOnClickListener(v ->
-                DialogHelper.showDateOfBirthDialog(ProfileActivity.this, currentUsername, userViewModel));
+                DialogHelper.showDateOfBirthDialog(ProfileActivity.this, currentUserId, userViewModel));
         genderLayout.setOnClickListener(v ->
-                DialogHelper.showGenderEditDialog(ProfileActivity.this, currentUsername, userViewModel));
+                DialogHelper.showGenderEditDialog(ProfileActivity.this, currentUserId, userViewModel));
         passwordLayout.setOnClickListener(v ->
-                DialogHelper.showPasswordChangeDialog(ProfileActivity.this, currentUsername, userViewModel));
+                DialogHelper.showPasswordChangeDialog(ProfileActivity.this, currentUserId, userViewModel));
 
         // User icon click -> pick image
         userIconLayout.setOnClickListener(v -> {
@@ -119,7 +125,7 @@ public class ProfileActivity extends AppCompatActivity {
                 switch (which) {
                     case 0:
                         // Remove image
-                        userViewModel.updateUserIcon(currentUsername, null);
+                        userViewModel.updateUserIconById(currentUserId, null);
                         userIcon.setImageResource(R.drawable.user_icon);
                         break;
 
@@ -188,7 +194,7 @@ public class ProfileActivity extends AppCompatActivity {
                     if (resizedBitmap != null) userIcon.setImageBitmap(resizedBitmap);
 
                     // Save to DB
-                    userViewModel.updateUserIcon(currentUsername, base64String);
+                    userViewModel.updateUserIconById(currentUserId, base64String);
 
                 } catch (IOException e) {
                     e.printStackTrace();

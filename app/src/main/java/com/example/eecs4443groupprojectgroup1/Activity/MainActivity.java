@@ -1,4 +1,4 @@
-package com.example.eecs4443groupprojectgroup1;
+package com.example.eecs4443groupprojectgroup1.Activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.eecs4443groupprojectgroup1.R;
+import com.example.eecs4443groupprojectgroup1.User.UserViewModel;
 import com.google.android.material.button.MaterialButton;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         rememberMeCheckbox = findViewById(R.id.remember_me_checkbox);
         loginButton = findViewById(R.id.login_btn);
         createAccountText = findViewById(R.id.create_account_link);
-        passwordToggleIcon = findViewById(R.id.password_toggle_icon);  // new icon view
+        passwordToggleIcon = findViewById(R.id.password_toggle_icon);
 
         // Initialize SharedPreferences
         sharedPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
@@ -49,16 +51,16 @@ public class MainActivity extends AppCompatActivity {
         userViewModel = new UserViewModel(getApplication());
 
         // Check for auto-login using saved preferences
-        String savedUsername = sharedPreferences.getString("username", null); // Always saved
-        boolean autoLogin = sharedPreferences.getBoolean("autoLogin", false); // Checkbox based
+        int savedUserId = sharedPreferences.getInt("userId", -1); // default -1 if not saved
+        boolean autoLogin = sharedPreferences.getBoolean("autoLogin", false);
 
-        if (savedUsername != null && autoLogin) {
+        if (savedUserId != -1 && autoLogin) {
             // If auto-login is enabled, navigate directly to HomeActivity
             Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-            intent.putExtra("username", savedUsername);
+            intent.putExtra("userId", savedUserId);
             startActivity(intent);
             finish(); // Prevent back navigation to login
-            return; // Ensure rest of onCreate is not executed
+            return;
         }
 
         // Underline "Create Account"
@@ -89,19 +91,14 @@ public class MainActivity extends AppCompatActivity {
             if (user != null) {
                 Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show();
 
-                // Save username and auto-login preference
+                // Save user ID (for later use)
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-
-                // Always save username (for later use in SettingsFragment)
-                editor.putString("username", username);
-
-                // Save auto-login preference if "Remember Me" is checked
+                editor.putInt("userId", user.id);
                 editor.putBoolean("autoLogin", rememberMeCheckbox.isChecked());
-
                 editor.apply();
 
                 // Navigate to HomeActivity
-                navigateToHome(username);
+                navigateToHome(user.id);
             } else {
                 Toast.makeText(this, "Invalid username or password", Toast.LENGTH_SHORT).show();
             }
@@ -109,8 +106,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Navigate to home
-    private void navigateToHome(String username) {
+    private void navigateToHome(int userId) {
         Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+        intent.putExtra("userId", userId);
         startActivity(intent);
         finish(); // Finish MainActivity so user can't go back
     }

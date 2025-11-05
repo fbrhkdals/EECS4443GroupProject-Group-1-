@@ -1,4 +1,4 @@
-package com.example.eecs4443groupprojectgroup1;
+package com.example.eecs4443groupprojectgroup1.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +13,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.eecs4443groupprojectgroup1.R;
+import com.example.eecs4443groupprojectgroup1.User.User;
+import com.example.eecs4443groupprojectgroup1.User.UserViewModel;
 import com.google.android.material.button.MaterialButton;
 
 public class SignupActivity extends AppCompatActivity {

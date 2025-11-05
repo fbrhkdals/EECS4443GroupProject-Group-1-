@@ -1,4 +1,4 @@
-package com.example.eecs4443groupprojectgroup1;
+package com.example.eecs4443groupprojectgroup1.User;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
