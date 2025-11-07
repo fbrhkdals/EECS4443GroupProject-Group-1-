@@ -22,7 +22,7 @@ public class SignOutHelper {
         activity.getSharedPreferences("loginPrefs", Context.MODE_PRIVATE)
                 .edit()
                 .putBoolean("autologin", false)
-                .remove("username")
+                .remove("userId")
                 .apply();
 
         // Navigate back to MainActivity (login screen)

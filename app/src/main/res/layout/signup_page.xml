@@ -23,8 +23,9 @@
 
                 <ImageButton
                     android:id="@+id/back_button"
+                    android:layout_marginTop="30dp"
                     android:layout_width="50dp"
-                    android:layout_height="100dp"
+                    android:layout_height="70dp"
                     android:background="@android:color/transparent"
                     android:src="@drawable/arrow_back" />
             </FrameLayout>
@@ -111,8 +112,7 @@
 
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp">
+                    android:layout_height="wrap_content">
 
                     <EditText
                         android:id="@+id/password_input"
