@@ -28,6 +28,7 @@ public class SignupActivity extends AppCompatActivity {
     private ImageView passwordToggleIcon;
 
     private boolean isPasswordVisible = false;
+    private boolean userCreationSuccess = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +112,7 @@ public class SignupActivity extends AppCompatActivity {
 
             // Check if user exists asynchronously
             userViewModel.getUserByUsername(username).observe(SignupActivity.this, user -> {
-                if (user != null) {
+                if (user != null && !userCreationSuccess) {
                     // Username already exists
                     usernameError.setText(getString(R.string.error_username_exists));
                     usernameError.setVisibility(View.VISIBLE);
@@ -123,6 +124,9 @@ public class SignupActivity extends AppCompatActivity {
                     newUser.email = email;
 
                     userViewModel.insert(newUser);
+
+                    // Mark signup success
+                    userCreationSuccess = true;
 
                     Toast.makeText(SignupActivity.this, "Signup successful!", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(SignupActivity.this, MainActivity.class));
