@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.eecs4443groupprojectgroup1.R;
+import com.example.eecs4443groupprojectgroup1.Util_Helper.SharedPreferencesHelper;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -44,6 +45,7 @@ public class HomeActivity extends AppCompatActivity {
         // Set default fragment and indicator based on shared preferences
         Tab savedTab = getSavedTab();
         selectTab(savedTab);
+        SharedPreferencesHelper.saveCurrentTab(HomeActivity.this, "CHAT");
 
         // Set click listeners
         taskbarFriends.setOnClickListener(v -> selectTab(Tab.FRIENDS));

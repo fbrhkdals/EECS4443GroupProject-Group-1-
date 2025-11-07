@@ -43,9 +43,7 @@ public class ProfileActivity extends AppCompatActivity {
     private ImageView userIcon;
     private TextView userName, userDescription, userEmail, userDateOfBirth, userGender;
 
-    private SharedPreferences sharedPreferences;
     private int currentUserId;
-
     private LinearLayout descriptionLayout, emailLayout, dateOfBirthLayout, genderLayout, passwordLayout;
     private FrameLayout userIconLayout;
 
@@ -54,8 +52,14 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile);
 
-        sharedPreferences = getSharedPreferences("loginPrefs", Context.MODE_PRIVATE);
-        currentUserId = sharedPreferences.getInt("userId", -1);
+        // Retrieve currentUserId using SharedPreferencesHelper
+        currentUserId = SharedPreferencesHelper.getUserId(ProfileActivity.this);
+
+        if (currentUserId == -1) {
+            Toast.makeText(this, "User not found", Toast.LENGTH_SHORT).show();
+            finish();  // Exit if the user is not found
+            return;
+        }
 
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
@@ -82,12 +86,14 @@ public class ProfileActivity extends AppCompatActivity {
 
         userViewModel.getUserById(currentUserId).observe(this, user -> {
             if (user != null) {
+                // Update UI with user data
                 userName.setText(user.username != null ? user.username : "Name");
                 userDescription.setText(user.description != null ? user.description : "User has no description.");
                 userEmail.setText(user.email != null ? user.email : "No email provided");
                 userDateOfBirth.setText(user.dateOfBirth != null ? user.dateOfBirth : "Birthday not set");
                 userGender.setText(user.gender != null ? user.gender : "Unspecified");
 
+                // Handle profile image
                 if (user.userIcon != null) {
                     Bitmap bitmap = ImageUtil.decodeFromBase64(user.userIcon);
                     if (bitmap != null) userIcon.setImageBitmap(bitmap);
@@ -95,6 +101,7 @@ public class ProfileActivity extends AppCompatActivity {
                     userIcon.setImageResource(R.drawable.user_icon);
                 }
             } else {
+                // Default data if user is not found in the database
                 userName.setText("Name");
                 userDescription.setText("User has no description.");
                 userEmail.setText("No email provided");
@@ -104,18 +111,14 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        descriptionLayout.setOnClickListener(v ->
-                DialogHelper.showDescriptionEditDialog(ProfileActivity.this, currentUserId, userViewModel));
-        emailLayout.setOnClickListener(v ->
-                DialogHelper.showEmailEditDialog(ProfileActivity.this, currentUserId, userViewModel));
-        dateOfBirthLayout.setOnClickListener(v ->
-                DialogHelper.showDateOfBirthDialog(ProfileActivity.this, currentUserId, userViewModel));
-        genderLayout.setOnClickListener(v ->
-                DialogHelper.showGenderEditDialog(ProfileActivity.this, currentUserId, userViewModel));
-        passwordLayout.setOnClickListener(v ->
-                DialogHelper.showPasswordChangeDialog(ProfileActivity.this, currentUserId, userViewModel));
+        // Click listeners for updating user data
+        descriptionLayout.setOnClickListener(v -> DialogHelper.showDescriptionEditDialog(ProfileActivity.this, currentUserId, userViewModel));
+        emailLayout.setOnClickListener(v -> DialogHelper.showEmailEditDialog(ProfileActivity.this, currentUserId, userViewModel));
+        dateOfBirthLayout.setOnClickListener(v -> DialogHelper.showDateOfBirthDialog(ProfileActivity.this, currentUserId, userViewModel));
+        genderLayout.setOnClickListener(v -> DialogHelper.showGenderEditDialog(ProfileActivity.this, currentUserId, userViewModel));
+        passwordLayout.setOnClickListener(v -> DialogHelper.showPasswordChangeDialog(ProfileActivity.this, currentUserId, userViewModel));
 
-        // User icon click -> pick image
+        // User icon click -> pick image from gallery or remove image
         userIconLayout.setOnClickListener(v -> {
             String[] options = {"Default Image", "Choose from Gallery"};
 
@@ -130,7 +133,7 @@ public class ProfileActivity extends AppCompatActivity {
                         break;
 
                     case 1:
-                        // Open gallery
+                        // Open gallery to pick an image
                         checkPermissionAndOpenGallery();
                         break;
                 }
@@ -139,6 +142,7 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
+    // Check permissions and open gallery if permission is granted
     private void checkPermissionAndOpenGallery() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES)
@@ -159,11 +163,13 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
+    // Open gallery to pick an image
     private void openGallery() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
 
+    // Handle permission request results
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == PERMISSION_REQUEST) {
@@ -176,6 +182,7 @@ public class ProfileActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
+    // Handle the image selection result
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

@@ -17,9 +17,14 @@ public class Friend {
     @ColumnInfo(name = "friend_id")
     public int friendId;
 
+    // The status of the friend request (e.g., "pending", "accepted", "rejected")
+    @ColumnInfo(name = "status")
+    public String status;
+
     // Constructor to initialize friend relationship
-    public Friend(int userId, int friendId) {
+    public Friend(int userId, int friendId, String status) {
         this.userId = userId;
         this.friendId = friendId;
+        this.status = status;
     }
 }

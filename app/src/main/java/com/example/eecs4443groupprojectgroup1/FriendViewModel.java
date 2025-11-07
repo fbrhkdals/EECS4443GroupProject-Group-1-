@@ -8,7 +8,6 @@ import com.example.eecs4443groupprojectgroup1.db.AppDatabase;
 
 import java.util.List;
 
-// ViewModel for managing friends data
 public class FriendViewModel extends ViewModel {
     private final FriendRepository friendRepository;
 
@@ -18,9 +17,28 @@ public class FriendViewModel extends ViewModel {
     }
 
     // Method to get the list of friends of user1, sorted by common friends with user2
-    // This method now takes both user IDs and returns LiveData
     public LiveData<List<FriendRepository.UserWithCommonFriends>> getSortedFriendsByCommonFriends(int userId1) {
         return friendRepository.getSortedFriendsByCommonFriends(userId1);
+    }
+
+    // Method to send a friend request (status = "pending")
+    public void sendFriendRequest(int userId, int friendId) {
+        friendRepository.sendFriendRequest(userId, friendId);
+    }
+
+    // Method to update the status of the friend request (accepted or rejected)
+    public void updateFriendRequestStatus(int userId, int friendId, String status) {
+        friendRepository.updateFriendRequestStatus(userId, friendId, status);
+    }
+
+    // Method to get all received friend requests (status = "pending")
+    public LiveData<List<Friend>> getReceivedRequests(int userId) {
+        return friendRepository.getReceivedRequests(userId);
+    }
+
+    // Method to get all sent friend requests (status = "pending")
+    public LiveData<List<Friend>> getSentRequests(int userId) {
+        return friendRepository.getSentRequests(userId);
     }
 
     // ViewModelFactory to instantiate the ViewModel with FriendRepository

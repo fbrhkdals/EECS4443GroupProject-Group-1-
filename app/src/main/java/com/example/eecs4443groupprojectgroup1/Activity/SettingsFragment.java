@@ -46,20 +46,18 @@ public class SettingsFragment extends Fragment {
         signOutLayout = view.findViewById(R.id.signout);
         settingsLayout = view.findViewById(R.id.settings);
 
-        // Initialize SharedPreferences
-        int currentUserId = requireActivity()
-                .getSharedPreferences("loginPrefs", Context.MODE_PRIVATE)
-                .getInt("userId", -1); // default -1 if not saved
+        // Get the current user's ID from SharedPreferences using SharedPreferencesHelper
+        int currentUserId = SharedPreferencesHelper.getUserId(requireActivity());
 
         if (currentUserId == -1) {
-            // userId not found, fallback behavior (optional)
+            // If userId is not found, show default values
             userName.setText("Name");
             userDescription.setText("User has no description.");
             userIcon.setImageResource(R.drawable.user_icon);
             return view;
         }
 
-        // Save the current tab as "CHAT"
+        // Save the current tab as "CHAT" using SharedPreferencesHelper
         SharedPreferencesHelper.saveCurrentTab(requireActivity(), "CHAT");
 
         // Initialize ViewModel
