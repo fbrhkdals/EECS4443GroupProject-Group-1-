@@ -1,6 +1,7 @@
 package com.example.eecs4443groupprojectgroup1.Activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -16,7 +17,7 @@ import com.example.eecs4443groupprojectgroup1.R;
 public class HomeActivity extends AppCompatActivity {
 
     private LinearLayout taskbarFriends, taskbarChat, taskbarSettings;
-    private View indicatorFriends, indicatorChat, indicatorSettings;
+    private View indicatorFriends, indicatorChat, indicatorSettings, searchIcon;
     private TextView topBarTitle;
 
     private static final String PREFS_NAME = "HomeActivityPrefs";
@@ -32,6 +33,8 @@ public class HomeActivity extends AppCompatActivity {
         taskbarChat = findViewById(R.id.taskbar_chat);
         taskbarSettings = findViewById(R.id.taskbar_settings);
         topBarTitle = findViewById(R.id.top_bar_title);
+        searchIcon = findViewById(R.id.search_icon);
+
 
         // Find indicator views (must be declared in XML layout)
         indicatorFriends = findViewById(R.id.indicator_friends);
@@ -46,6 +49,10 @@ public class HomeActivity extends AppCompatActivity {
         taskbarFriends.setOnClickListener(v -> selectTab(Tab.FRIENDS));
         taskbarChat.setOnClickListener(v -> selectTab(Tab.CHAT));
         taskbarSettings.setOnClickListener(v -> selectTab(Tab.SETTINGS));
+        searchIcon.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, SearchFriendsActivity.class);
+            startActivity(intent);
+        });
     }
 
     private enum Tab {
@@ -57,6 +64,7 @@ public class HomeActivity extends AppCompatActivity {
         indicatorFriends.setVisibility(View.INVISIBLE);
         indicatorChat.setVisibility(View.INVISIBLE);
         indicatorSettings.setVisibility(View.INVISIBLE);
+        searchIcon.setVisibility(View.GONE);
 
         // Show selected indicator and update UI
         switch (tab) {
@@ -64,6 +72,7 @@ public class HomeActivity extends AppCompatActivity {
                 replaceFragment(new FriendsFragment());
                 updateTitle("Friends");
                 indicatorFriends.setVisibility(View.VISIBLE);
+                searchIcon.setVisibility(View.VISIBLE);
                 break;
 
             case CHAT:
