@@ -100,6 +100,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             if ("Send Request".equals(buttonText)) {
                 // Send the friend request
                 if (friendViewModel != null) {
+                    friendViewModel.sendFriendRequest(currentUserId, friendId);
                     friendViewModel.updateFriendRequestStatus(currentUserId, friendId, "pending");
 
                     // Show a Toast message indicating the friend request is sent
