@@ -18,18 +18,15 @@ public class SignOutHelper {
      * @param activity Current activity context
      */
     public static void signOut(Activity activity) {
-        // Clear saved username to disable auto-login
-        activity.getSharedPreferences("loginPrefs", Context.MODE_PRIVATE)
-                .edit()
-                .putBoolean("autologin", false)
-                .remove("userId")
-                .apply();
+        // Clear auto-login data and userId from SharedPreferences using SharedPreferencesHelper
+        SharedPreferencesHelper.saveAutoLogin(activity, false);  // Disable auto-login
+        SharedPreferencesHelper.saveUserId(activity, -1);  // Clear user ID
 
         // Navigate back to MainActivity (login screen)
         Intent intent = new Intent(activity, MainActivity.class);
         activity.startActivity(intent);
 
-        // Close current activity
+        // Close the current activity so that user cannot return to the previous screen
         activity.finish();
     }
 }

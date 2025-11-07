@@ -5,6 +5,8 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 
+import java.util.List;
+
 @Dao
 public interface UserDao {
 
@@ -51,4 +53,12 @@ public interface UserDao {
     // Update user icon (URI or Base64 string) by userId
     @Query("UPDATE users SET userIcon = :userIcon WHERE id = :userId")
     void updateUserIconById(int userId, String userIcon);
+
+    // Get user by sync
+    @Query("SELECT * FROM users WHERE id = :userId LIMIT 1")
+    User getUserByIdSync(int userId);
+
+    // Get all users: Retrieve a list of all users in the database
+    @Query("SELECT * FROM users")
+    List<User> getAllUsers();
 }
