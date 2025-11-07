@@ -6,14 +6,17 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
+import com.example.eecs4443groupprojectgroup1.FriendsDao;
 import com.example.eecs4443groupprojectgroup1.User.User;
 import com.example.eecs4443groupprojectgroup1.User.UserDao;
+import com.example.eecs4443groupprojectgroup1.Friend;
 
-@Database(entities = {User.class}, version = 1)
+@Database(entities = {User.class, Friend.class}, version = 1) // Added Friend.class here
 public abstract class AppDatabase extends RoomDatabase {
 
-    // Abstract method that returns the UserDao instance
+    // Abstract methods to get DAO instances
     public abstract UserDao userDao();
+    public abstract FriendsDao friendDao();
 
     // Singleton instance to ensure only one instance of the database is created
     private static volatile AppDatabase INSTANCE;
@@ -29,7 +32,7 @@ public abstract class AppDatabase extends RoomDatabase {
                     // Create the database instance using Room
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                                     AppDatabase.class, "app_database")
-                            //.addMigrations(Migrations.MIGRATION)
+                            //.addMigrations(Migrations) // Add migration if schema changes
                             .build();
                 }
             }

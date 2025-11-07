@@ -23,7 +23,7 @@ public interface FriendsDao {
     List<Integer> getFriends(int userId);
 
     // Get the count of common friends between two users
-    @Query("SELECT COUNT(*) FROM friends f1 " +
+    @Query("SELECT COUNT(DISTINCT f1.friend_id) FROM friends f1 " +
             "JOIN friends f2 ON f1.friend_id = f2.friend_id " +
             "WHERE f1.user_id = :userId1 AND f2.user_id = :userId2")
     int getCommonFriendsCount(int userId1, int userId2);

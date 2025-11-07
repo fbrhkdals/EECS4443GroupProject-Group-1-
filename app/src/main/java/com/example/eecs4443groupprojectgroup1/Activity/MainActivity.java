@@ -1,7 +1,6 @@
 package com.example.eecs4443groupprojectgroup1.Activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputType;
 import android.widget.CheckBox;
@@ -14,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.eecs4443groupprojectgroup1.R;
 import com.example.eecs4443groupprojectgroup1.User.UserViewModel;
+import com.example.eecs4443groupprojectgroup1.Util_Helper.SharedPreferencesHelper;
 import com.google.android.material.button.MaterialButton;
 
 public class MainActivity extends AppCompatActivity {
@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
     private ImageView passwordToggleIcon;
 
     private UserViewModel userViewModel;
-    private SharedPreferences sharedPreferences;
 
     // Track password visibility state
     private boolean isPasswordVisible = false;
@@ -44,15 +43,12 @@ public class MainActivity extends AppCompatActivity {
         createAccountText = findViewById(R.id.create_account_link);
         passwordToggleIcon = findViewById(R.id.password_toggle_icon);
 
-        // Initialize SharedPreferences
-        sharedPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
-
         // Initialize ViewModel
         userViewModel = new UserViewModel(getApplication());
 
         // Check for auto-login using saved preferences
-        int savedUserId = sharedPreferences.getInt("userId", -1); // default -1 if not saved
-        boolean autoLogin = sharedPreferences.getBoolean("autoLogin", false);
+        int savedUserId = SharedPreferencesHelper.getUserId(this); // Use SharedPreferencesHelper
+        boolean autoLogin = rememberMeCheckbox.isChecked();
 
         if (savedUserId != -1 && autoLogin) {
             // If auto-login is enabled, navigate directly to HomeActivity
@@ -92,10 +88,8 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show();
 
                 // Save user ID (for later use)
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putInt("userId", user.id);
-                editor.putBoolean("autoLogin", rememberMeCheckbox.isChecked());
-                editor.apply();
+                SharedPreferencesHelper.saveUserId(this, user.id); // Save userId using SharedPreferencesHelper
+                SharedPreferencesHelper.saveAutoLogin(this, rememberMeCheckbox.isChecked()); // Save autoLogin state
 
                 // Navigate to HomeActivity
                 navigateToHome(user.id);
