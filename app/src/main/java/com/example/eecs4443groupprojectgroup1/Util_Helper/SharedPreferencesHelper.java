@@ -39,10 +39,4 @@ public class SharedPreferencesHelper {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         return sharedPreferences.getInt(KEY_USER_ID, -1); // Return -1 if userId is not found
     }
-
-    // Retrieve the auto-login state from SharedPreferences
-    public static boolean getAutoLogin(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        return sharedPreferences.getBoolean(KEY_AUTO_LOGIN, false); // Default is false
-    }
 }

@@ -45,6 +45,7 @@ public class FriendRepository {
     public LiveData<List<UserWithCommonFriends>> getSortedFriendsByCommonFriends(int userId1) {
         MutableLiveData<List<UserWithCommonFriends>> liveData = new MutableLiveData<>();
 
+        // Run the database query on a background thread
         new Thread(() -> {
             // Get user1's friend list
             List<User> friends = getFriends(userId1);
@@ -107,6 +108,35 @@ public class FriendRepository {
             }
         }
         return false;  // User is not a friend
+    }
+
+    // *** Add friend request related methods ***
+
+    // Send a friend request (status = "pending")
+    public void sendFriendRequest(int userId, int friendId) {
+        // Run the database query on a background thread
+        new Thread(() -> {
+            Friend friendRequest = new Friend(userId, friendId, "pending");  // Create the friend request with 'pending' status
+            friendsDao.addFriend(friendRequest);  // Add the friend request to the database
+        }).start();
+    }
+
+    // Update the status of a friend request (e.g., 'accepted', 'rejected')
+    public void updateFriendRequestStatus(int userId, int friendId, String status) {
+        // Run the database query on a background thread
+        new Thread(() -> {
+            friendsDao.updateFriendRequestStatus(userId, friendId, status);  // Update the status in the database
+        }).start();
+    }
+
+    // Get all received friend requests (status = "pending")
+    public LiveData<List<Friend>> getReceivedRequests(int userId) {
+        return friendsDao.getReceivedRequests(userId);  // Fetch the list of received friend requests for the user
+    }
+
+    // Get all sent friend requests (status = "pending")
+    public LiveData<List<Friend>> getSentRequests(int userId) {
+        return friendsDao.getSentRequests(userId);  // Fetch the list of sent friend requests for the user
     }
 
     // Helper class to pair a user with their common friends count
