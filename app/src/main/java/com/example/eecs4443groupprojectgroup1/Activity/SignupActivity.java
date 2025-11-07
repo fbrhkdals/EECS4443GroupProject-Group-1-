@@ -109,13 +109,14 @@ public class SignupActivity extends AppCompatActivity {
                 return;
             }
 
-            // Check if user exists
+            // Check if user exists asynchronously
             userViewModel.getUserByUsername(username).observe(SignupActivity.this, user -> {
                 if (user != null) {
+                    // Username already exists
                     usernameError.setText(getString(R.string.error_username_exists));
                     usernameError.setVisibility(View.VISIBLE);
                 } else {
-                    // Create and insert user
+                    // Username is unique, proceed with signup
                     User newUser = new User();
                     newUser.username = username;
                     newUser.password = password;
