@@ -70,7 +70,7 @@ public class SignupActivity extends AppCompatActivity {
             boolean isPasswordError = false;
             boolean isEmailError = false;
 
-            // Validate username
+            // Validate Header
             if (username.isEmpty()) {
                 usernameError.setText(getString(R.string.error_username_required));
                 usernameError.setVisibility(View.VISIBLE);

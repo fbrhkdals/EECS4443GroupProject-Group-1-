@@ -2,6 +2,7 @@ package com.example.eecs4443groupprojectgroup1;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "friends")
@@ -20,6 +21,17 @@ public class Friend {
     // The status of the friend request (e.g., "pending", "accepted", "rejected")
     @ColumnInfo(name = "status")
     public String status;
+
+    // Header fields for RecyclerView
+    @Ignore
+    public boolean isHeader = false;
+
+    @Ignore
+    public String Header;
+
+    // Default constructor (required for creating header items)
+    public Friend() {
+    }
 
     // Constructor to initialize friend relationship
     public Friend(int userId, int friendId, String status) {

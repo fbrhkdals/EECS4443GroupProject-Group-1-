@@ -5,7 +5,6 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
-import androidx.room.Update;
 
 import java.util.List;
 
@@ -34,19 +33,27 @@ public interface FriendsDao {
     @Query("SELECT status FROM friends WHERE user_id = :userId1 AND friend_id = :userId2 LIMIT 1")
     LiveData<String> getFriendRequestStatus(int userId1, int userId2);
 
+    // Check FriendRequest exist or not
+    @Query("SELECT * FROM friends WHERE user_id = :userId AND friend_id = :friendId LIMIT 1")
+    Friend getFriendRequest(int userId, int friendId);
+
     // Update the status of the friend request (accepted or rejected)
     @Query("UPDATE friends SET status = :status WHERE user_id = :userId1 AND friend_id = :userId2")
     void updateFriendRequestStatus(int userId1, int userId2, String status);
 
-    // Get all pending friend requests for a user (friends have sent a request to user)
-    @Query("SELECT * FROM friends WHERE friend_id = :userId AND status = 'pending'")
-    LiveData<List<Friend>> getReceivedRequests(int userId);
+    // Fetches the list of friend requests received by the user, filtered by the provided status.
+    @Query("SELECT * FROM friends WHERE friend_id = :userId AND status = :status")
+    LiveData<List<Friend>> getReceivedFriendRequestsByStatus(int userId, String status);
 
-    // Get all friend requests sent by a user
-    @Query("SELECT * FROM friends WHERE user_id = :userId")
-    LiveData<List<Friend>> getSentRequests(int userId);
+    // Sorted version
+    @Query("SELECT f.* \n" +
+            "    FROM friends f\n" +
+            "    INNER JOIN users u ON f.user_id = u.id\n" +
+            "    WHERE f.friend_id = :userId AND f.status = :status\n" +
+            "    ORDER BY u.username COLLATE NOCASE ASC")
+    LiveData<List<Friend>> getReceivedFriendRequestsByStatusSorted(int userId, String status);
 
-    // Get all friend requests with pending status for a user
-    @Query("SELECT * FROM friends WHERE user_id = :userId AND status = 'pending'")
-    LiveData<List<Friend>> getPendingRequests(int userId);
+    // Check if there is an 'accepted' friend relationship between two users
+    @Query("SELECT COUNT(*) FROM friends WHERE ((user_id = :userId AND friend_id = :friendId) OR (user_id = :friendId AND friend_id = :userId)) AND status = 'accepted'")
+    boolean isFriendAccepted(int userId, int friendId);
 }

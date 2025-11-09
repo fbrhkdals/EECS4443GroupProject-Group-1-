@@ -23,7 +23,7 @@ public class UserViewModel extends AndroidViewModel {
         return userRepository.login(username, password);
     }
 
-    // Get user by username (To check duplication)
+    // Get user by Header (To check duplication)
     public LiveData<User> getUserByUsername(String username) {
         return userRepository.getUserByUsername(username);
     }
@@ -38,7 +38,7 @@ public class UserViewModel extends AndroidViewModel {
         userRepository.insert(user);
     }
 
-    // Update the username of a specific user by id
+    // Update the Header of a specific user by id
     public void updateUsername(int userid, String newUsername) {
         userRepository.updateUsername(userid, newUsername);
     }

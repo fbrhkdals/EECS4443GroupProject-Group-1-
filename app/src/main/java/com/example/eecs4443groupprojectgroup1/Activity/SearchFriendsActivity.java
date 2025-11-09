@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.eecs4443groupprojectgroup1.FriendViewModel;
 import com.example.eecs4443groupprojectgroup1.FriendsDao;
 import com.example.eecs4443groupprojectgroup1.R;
-import com.example.eecs4443groupprojectgroup1.UserAdapter;
+import com.example.eecs4443groupprojectgroup1.SearchFriendsAdapter;
 import com.example.eecs4443groupprojectgroup1.Util_Helper.SharedPreferencesHelper;
 import com.example.eecs4443groupprojectgroup1.db.AppDatabase;
 
@@ -23,7 +23,7 @@ public class SearchFriendsActivity extends AppCompatActivity {
 
     private ImageButton backButton;
     private RecyclerView recyclerView;
-    private UserAdapter userAdapter;
+    private SearchFriendsAdapter userAdapter;
     private FriendViewModel friendViewModel;
     private EditText searchEditText;
 
@@ -45,7 +45,7 @@ public class SearchFriendsActivity extends AppCompatActivity {
         FriendsDao friendDao = appDatabase.friendDao();  // Get FriendDao instance
 
         // Set up the adapter after the ViewModel is initialized
-        userAdapter = new UserAdapter(Collections.emptyList(), friendViewModel, friendDao);  // Pass friendDao here
+        userAdapter = new SearchFriendsAdapter(Collections.emptyList(), friendViewModel, friendDao, this);  // Pass friendDao here
         recyclerView.setAdapter(userAdapter);
 
         // Get the current user's ID from SharedPreferences

@@ -16,14 +16,14 @@ public class UserRepository {
         userDao = db.userDao();  // Get the UserDao for database operations
     }
 
-    // Login: Returns a LiveData of the user that matches the given username and password
+    // Login: Returns a LiveData of the user that matches the given Header and password
     public LiveData<User> login(String username, String password) {
         return userDao.login(username, password);  // Query the database for a matching user
     }
 
-    // Get user by username: Returns a LiveData of the user matching the given username
+    // Get user by Header: Returns a LiveData of the user matching the given Header
     public LiveData<User> getUserByUsername(String username) {
-        return userDao.getUserByUsername(username);  // Query the database for a user with the given username
+        return userDao.getUserByUsername(username);  // Query the database for a user with the given Header
     }
 
     // Get user by ID: Returns a LiveData of the user matching the given userId
@@ -31,12 +31,16 @@ public class UserRepository {
         return userDao.getUserById(userId);  // Query the database for a user with the given ID
     }
 
+    public String getUsernameByIdSync(int userId) {
+        return userDao.getUsernameByIdSync(userId);
+    }
+
     // Insert a new user: Runs the insertion in a separate thread to avoid blocking the main thread
     public void insert(User user) {
         new Thread(() -> userDao.insert(user)).start();  // Execute the insert operation in a background thread
     }
 
-    // Update the username for the given user (by userid)
+    // Update the Header for the given user (by userid)
     public void updateUsername(int userid, String newUsername) {
         new Thread(() -> userDao.updateUsername(userid, newUsername)).start();
     }

@@ -21,6 +21,10 @@ public class FriendRepository {
         this.userDao = db.userDao();  // DAO for managing user data
     }
 
+    public boolean isFriendAccepted(int userId1, int userId2) {
+        return friendsDao.isFriendAccepted(userId1, userId2);
+    }
+
     // Fetch the list of friends for a specific user by their userId
     public List<User> getFriends(int userId) {
         List<Integer> friendIds = friendsDao.getFriends(userId);  // Get the list of friend IDs for the given user
@@ -54,7 +58,7 @@ public class FriendRepository {
             // For each friend, calculate the common friends count with other friends
             for (User friend : friends) {
                 // Skip adding the user itself to the list
-                if (friend.id == userId1) continue;  // If friend's ID is the same as userId1, skip
+                if (friend.id == userId1 || isFriendAccepted(userId1, friend.id)) continue;  // If friend's ID is the same as userId1, skip
 
                 // Get the common friends count with all of userId1's friends
                 int commonFriendsCount = 0;
@@ -82,7 +86,7 @@ public class FriendRepository {
 
             for (User user : allUsers) {
                 // Skip users that are already friends or the user itself
-                if (user.id == userId1 || isFriend(user, friends)) {
+                if (user.id == userId1 || isFriendAccepted(userId1, user.id)) {
                     continue;  // Skip if it's the user themselves or a friend
                 }
 
@@ -100,16 +104,6 @@ public class FriendRepository {
         return liveData;  // Return the LiveData to the UI
     }
 
-    // Helper method to check if the user is in the friends list
-    private boolean isFriend(User user, List<User> friends) {
-        for (User friend : friends) {
-            if (friend.id == user.id) {
-                return true;  // User is a friend
-            }
-        }
-        return false;  // User is not a friend
-    }
-
     // *** Add friend request related methods ***
 
     // Send a friend request (status = "pending")
@@ -117,7 +111,9 @@ public class FriendRepository {
         // Run the database query on a background thread
         new Thread(() -> {
             Friend friendRequest = new Friend(userId, friendId, "pending");  // Create the friend request with 'pending' status
+            Friend createFriend = new Friend(friendId, userId, "cancel");
             friendsDao.addFriend(friendRequest);  // Add the friend request to the database
+            friendsDao.addFriend(createFriend);
         }).start();
     }
 
@@ -129,14 +125,9 @@ public class FriendRepository {
         }).start();
     }
 
-    // Get all received friend requests (status = "pending")
-    public LiveData<List<Friend>> getReceivedRequests(int userId) {
-        return friendsDao.getReceivedRequests(userId);  // Fetch the list of received friend requests for the user
-    }
-
-    // Get all sent friend requests (status = "pending")
-    public LiveData<List<Friend>> getSentRequests(int userId) {
-        return friendsDao.getSentRequests(userId);  // Fetch the list of sent friend requests for the user
+    // Get FriendRequest
+    public Friend getFriendRequest(int userId, int friendId) {
+        return friendsDao.getFriendRequest(userId, friendId);
     }
 
     // Helper class to pair a user with their common friends count
@@ -149,5 +140,15 @@ public class FriendRepository {
             this.user = user;
             this.commonFriendsCount = commonFriendsCount;
         }
+    }
+
+    // New method to fetch received friend requests with specific status
+    public LiveData<List<Friend>> getReceivedFriendRequestsByStatus(int userId, String status) {
+        return friendsDao.getReceivedFriendRequestsByStatus(userId, status);
+    }
+
+    // Sorted version
+    public LiveData<List<Friend>> getReceivedFriendRequestsByStatusSorted(int userId, String status) {
+        return friendsDao.getReceivedFriendRequestsByStatusSorted(userId, status);
     }
 }

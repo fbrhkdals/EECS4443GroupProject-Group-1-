@@ -3,6 +3,7 @@ package com.example.eecs4443groupprojectgroup1.User;
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
 import java.util.List;
@@ -11,14 +12,14 @@ import java.util.List;
 public interface UserDao {
 
     // Insert a new user into the database
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(User user);
 
-    // Login: Find a user where the username and password match
+    // Login: Find a user where the Header and password match
     @Query("SELECT * FROM users WHERE LOWER(username) = LOWER(:username) AND password = :password LIMIT 1")
     LiveData<User> login(String username, String password);
 
-    // Get user by username: Find a user by their username
+    // Get user by Header: Find a user by their Header
     @Query("SELECT * FROM users WHERE LOWER(username) = LOWER(:username) LIMIT 1")
     LiveData<User> getUserByUsername(String username);
 
@@ -26,7 +27,10 @@ public interface UserDao {
     @Query("SELECT * FROM users WHERE id = :userId LIMIT 1")
     LiveData<User> getUserById(int userId);
 
-    // Update username by userId
+    @Query("SELECT username FROM users WHERE id = :userId LIMIT 1")
+    String getUsernameByIdSync(int userId);
+
+    // Update Header by userId
     @Query("UPDATE users SET username = :username WHERE id = :userId")
     void updateUsername(int userId, String username);
 

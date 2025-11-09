@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
                 // Navigate to HomeActivity
                 navigateToHome(user.id);
             } else {
-                Toast.makeText(this, "Invalid username or password", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Invalid Header or password", Toast.LENGTH_SHORT).show();
             }
         });
     }

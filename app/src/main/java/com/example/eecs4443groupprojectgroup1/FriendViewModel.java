@@ -21,6 +21,11 @@ public class FriendViewModel extends ViewModel {
         return friendRepository.getSortedFriendsByCommonFriends(userId1);
     }
 
+    // Get FriendRequest
+    public Friend getFriendRequest(int userId, int friendId) {
+        return friendRepository.getFriendRequest(userId, friendId);
+    }
+
     // Method to send a friend request (status = "pending")
     public void sendFriendRequest(int userId, int friendId) {
         friendRepository.sendFriendRequest(userId, friendId);
@@ -29,16 +34,6 @@ public class FriendViewModel extends ViewModel {
     // Method to update the status of the friend request (accepted or rejected)
     public void updateFriendRequestStatus(int userId, int friendId, String status) {
         friendRepository.updateFriendRequestStatus(userId, friendId, status);
-    }
-
-    // Method to get all received friend requests (status = "pending")
-    public LiveData<List<Friend>> getReceivedRequests(int userId) {
-        return friendRepository.getReceivedRequests(userId);
-    }
-
-    // Method to get all sent friend requests (status = "pending")
-    public LiveData<List<Friend>> getSentRequests(int userId) {
-        return friendRepository.getSentRequests(userId);
     }
 
     // ViewModelFactory to instantiate the ViewModel with FriendRepository
@@ -51,8 +46,20 @@ public class FriendViewModel extends ViewModel {
 
         @Override
         public <T extends ViewModel> T create(Class<T> modelClass) {
+            // Create a new instance of FriendRepository using the appDatabase
             FriendRepository repository = new FriendRepository(appDatabase);
+            // Return a new instance of FriendViewModel
             return (T) new FriendViewModel(repository);
         }
+    }
+
+    // Get the list of received friend requests by status (e.g., "pending")
+    public LiveData<List<Friend>> getReceivedFriendRequestsByStatus(int userId, String status) {
+        return friendRepository.getReceivedFriendRequestsByStatus(userId, status);
+    }
+
+    // Sorted version
+    public LiveData<List<Friend>> getReceivedFriendRequestsByStatusSorted(int userId, String status) {
+        return friendRepository.getReceivedFriendRequestsByStatusSorted(userId, status);
     }
 }
