@@ -19,6 +19,7 @@ import com.example.eecs4443groupprojectgroup1.Util_Helper.ImageUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 public class FriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -152,25 +153,53 @@ public class FriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                             .setView(popupView)
                             .create();
 
-                    // Delete friend
-                    popupDelete.setOnClickListener(bv -> {
-                        friendViewModel.updateFriendRequestStatus(friend.userId, friend.friendId, "deleted");
-                        friendViewModel.updateFriendRequestStatus(friend.friendId, friend.userId, "deleted");
-                        int pos = holder.getAdapterPosition();
-                        if (pos != RecyclerView.NO_POSITION) {
-                            friends.remove(pos);
-                            notifyItemRemoved(pos);
+                    Executors.newSingleThreadExecutor().execute(() -> {
+
+                        Friend existing = friendViewModel.getFriendRequest(friend.userId, friend.friendId);
+
+                        if (existing != null && "accepted".equals(existing.status)){
+                            // Delete friend
+                            popupDelete.setOnClickListener(bv -> {
+                                friendViewModel.updateFriendRequestStatus(friend.userId, friend.friendId, "deleted");
+                                friendViewModel.updateFriendRequestStatus(friend.friendId, friend.userId, "deleted");
+                                int pos = holder.getAdapterPosition();
+                                if (pos != RecyclerView.NO_POSITION) {
+                                    friends.remove(pos);
+                                    notifyItemRemoved(pos);
+                                }
+                                Toast.makeText(v.getContext(), "Friend deleted", Toast.LENGTH_SHORT).show();
+                                dialog.dismiss();
+                            });
+
+                            // 💬 Create chat
+                            popupCreateChat.setOnClickListener(bv -> {
+                                Toast.makeText(v.getContext(), "Chat created with " + user.username, Toast.LENGTH_SHORT).show();
+                                dialog.dismiss();
+                            });
+                        } else {
+                            popupDelete.setText("Decline");
+                            popupCreateChat.setText("Accept");
+                            // Accept
+                            popupCreateChat.setOnClickListener(bv -> {
+                                friendViewModel.updateFriendRequestStatus(friend.userId, friend.friendId, "accepted");
+                                friendViewModel.updateFriendRequestStatus(friend.friendId, friend.userId, "accepted");
+                                Toast.makeText(v.getContext(), "Friend request accepted", Toast.LENGTH_SHORT).show();
+                                dialog.dismiss();
+                            });
+
+                            // Decline
+                            popupDelete.setOnClickListener(bv -> {
+                                friendViewModel.updateFriendRequestStatus(friend.userId, friend.friendId, "rejected");
+                                int pos = holder.getAdapterPosition();
+                                if (pos != RecyclerView.NO_POSITION) {
+                                    friends.remove(pos);
+                                    notifyItemRemoved(pos);
+                                    Toast.makeText(v.getContext(), "Friend request declined", Toast.LENGTH_SHORT).show();
+                                    dialog.dismiss();
+                                }
+                            });
                         }
-                        Toast.makeText(v.getContext(), "Friend deleted", Toast.LENGTH_SHORT).show();
-                        dialog.dismiss();
                     });
-
-                    // 💬 Create chat
-                    popupCreateChat.setOnClickListener(bv -> {
-                        Toast.makeText(v.getContext(), "Chat created with " + user.username, Toast.LENGTH_SHORT).show();
-                        dialog.dismiss();
-                    });
-
                     dialog.show();
                 });
             }
