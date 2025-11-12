@@ -2,14 +2,30 @@ package com.example.eecs4443groupprojectgroup1;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.Ignore;
-import androidx.room.PrimaryKey;
+import androidx.room.Index;
 
-@Entity(tableName = "friends")
+@Entity(
+        tableName = "friends",
+        foreignKeys = {
+                @ForeignKey(
+                        entity = com.example.eecs4443groupprojectgroup1.User.User.class,
+                        parentColumns = "id",
+                        childColumns = "user_id",
+                        onDelete = ForeignKey.CASCADE
+                ),
+                @ForeignKey(
+                        entity = com.example.eecs4443groupprojectgroup1.User.User.class,
+                        parentColumns = "id",
+                        childColumns = "friend_id",
+                        onDelete = ForeignKey.CASCADE
+                )
+        },
+        primaryKeys = {"user_id","friend_id"},
+        indices = { @Index(value = {"user_id","friend_id"}, unique = true) }
+)
 public class Friend {
-
-    @PrimaryKey(autoGenerate = true)
-    public int id;
 
     // user_id and friend_id represent the relationship between two users
     @ColumnInfo(name = "user_id")

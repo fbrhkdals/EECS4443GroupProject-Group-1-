@@ -32,7 +32,7 @@ public abstract class AppDatabase extends RoomDatabase {
                     // Create the database instance using Room
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                                     AppDatabase.class, "app_database")
-                            //.addMigrations(Migrations) // Add migration if schema changes
+                            //.addMigrations(Migrations.MIGRATION) // Add migration if schema changes
                             .build();
                 }
             }
