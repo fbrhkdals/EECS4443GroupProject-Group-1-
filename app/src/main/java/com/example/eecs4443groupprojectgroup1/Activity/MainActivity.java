@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Check for auto-login using saved preferences
         int savedUserId = SharedPreferencesHelper.getUserId(this); // Use SharedPreferencesHelper
-        boolean autoLogin = rememberMeCheckbox.isChecked();
+        boolean autoLogin = SharedPreferencesHelper.getAutoLogin(this);
 
         if (savedUserId != -1 && autoLogin) {
             // If auto-login is enabled, navigate directly to HomeActivity
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
                 // Navigate to HomeActivity
                 navigateToHome(user.id);
             } else {
-                Toast.makeText(this, "Invalid Header or password", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Invalid Username or password", Toast.LENGTH_SHORT).show();
             }
         });
     }

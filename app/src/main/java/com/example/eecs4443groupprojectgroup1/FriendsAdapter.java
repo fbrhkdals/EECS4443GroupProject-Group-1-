@@ -1,6 +1,7 @@
 package com.example.eecs4443groupprojectgroup1;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -171,14 +172,20 @@ public class FriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                 dialog.dismiss();
                             });
 
-                            // 💬 Create chat
+                            // Create chat
                             popupCreateChat.setOnClickListener(bv -> {
+                                // Pass friend's information in the intent and start ChatActivity
+                                Intent intent = new Intent(v.getContext(), ChatActivity.class);
+                                intent.putExtra("friendId", friend.userId); // Pass the friend's ID
+                                v.getContext().startActivity(intent); // Start ChatActivity
                                 Toast.makeText(v.getContext(), "Chat created with " + user.username, Toast.LENGTH_SHORT).show();
                                 dialog.dismiss();
                             });
                         } else {
+
                             popupDelete.setText("Decline");
                             popupCreateChat.setText("Accept");
+
                             // Accept
                             popupCreateChat.setOnClickListener(bv -> {
                                 friendViewModel.updateFriendRequestStatus(friend.userId, friend.friendId, "accepted");

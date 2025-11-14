@@ -45,6 +45,12 @@
         <activity android:name=".Activity.SearchFriendsActivity" android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" android:exported="false" />
 
+        <activity android:name=".ChatActivity" android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" android:exported="false" />
+
+        <activity android:name=".CreateChatActivity" android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" android:exported="false" />
+
     </application>
 
 </manifest>

@@ -18,24 +18,24 @@
             android:background="@android:color/transparent"
             android:src="@drawable/arrow_back" />
 
-            <EditText
-                android:id="@+id/search_edittext"
-                android:layout_width="match_parent"
-                android:layout_height="35dp"
-                android:hint="Search Friends"
-                android:drawableEnd="@drawable/search"
-                android:background="@drawable/rounded_corner"
-                android:paddingStart="16dp"
-                android:layout_marginStart="50dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginTop="57.5dp"
-                android:paddingEnd="16dp"
-                android:inputType="text" />
+        <EditText
+            android:id="@+id/search_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:hint="Search Friends"
+            android:drawableEnd="@drawable/search"
+            android:background="@drawable/rounded_corner"
+            android:paddingStart="16dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="57.5dp"
+            android:paddingEnd="16dp"
+            android:inputType="text" />
 
     </FrameLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/users_recyclerview"
+        android:id="@+id/createChat_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="8dp"

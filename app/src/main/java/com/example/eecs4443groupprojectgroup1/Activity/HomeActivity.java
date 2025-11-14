@@ -12,13 +12,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.example.eecs4443groupprojectgroup1.CreateChatActivity;
 import com.example.eecs4443groupprojectgroup1.R;
 import com.example.eecs4443groupprojectgroup1.Util_Helper.SharedPreferencesHelper;
 
 public class HomeActivity extends AppCompatActivity {
 
     private LinearLayout taskbarFriends, taskbarChat, taskbarSettings;
-    private View indicatorFriends, indicatorChat, indicatorSettings, searchIcon;
+    private View indicatorFriends, indicatorChat, indicatorSettings, searchIcon, createChatIcon;
     private TextView topBarTitle;
 
     private static final String PREFS_NAME = "HomeActivityPrefs";
@@ -35,6 +36,7 @@ public class HomeActivity extends AppCompatActivity {
         taskbarSettings = findViewById(R.id.taskbar_settings);
         topBarTitle = findViewById(R.id.top_bar_title);
         searchIcon = findViewById(R.id.search_icon);
+        createChatIcon = findViewById(R.id.CreateChat_icon);
 
 
         // Find indicator views (must be declared in XML layout)
@@ -55,6 +57,10 @@ public class HomeActivity extends AppCompatActivity {
             Intent intent = new Intent(HomeActivity.this, SearchFriendsActivity.class);
             startActivity(intent);
         });
+        createChatIcon.setOnClickListener( v -> {
+            Intent intent = new Intent(HomeActivity.this, CreateChatActivity.class);
+            startActivity(intent);
+        });
     }
 
     private enum Tab {
@@ -67,6 +73,7 @@ public class HomeActivity extends AppCompatActivity {
         indicatorChat.setVisibility(View.INVISIBLE);
         indicatorSettings.setVisibility(View.INVISIBLE);
         searchIcon.setVisibility(View.GONE);
+        createChatIcon.setVisibility(View.GONE);
 
         // Show selected indicator and update UI
         switch (tab) {
@@ -81,6 +88,7 @@ public class HomeActivity extends AppCompatActivity {
                 replaceFragment(new ChatFragment());
                 updateTitle("Chat");
                 indicatorChat.setVisibility(View.VISIBLE);
+                createChatIcon.setVisibility(View.VISIBLE);
                 break;
 
             case SETTINGS:
