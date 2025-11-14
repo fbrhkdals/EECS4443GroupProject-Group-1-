@@ -14,10 +14,9 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.eecs4443groupprojectgroup1.Chat;
-import com.example.eecs4443groupprojectgroup1.ChatActivity;
-import com.example.eecs4443groupprojectgroup1.ChatAdapter;
-import com.example.eecs4443groupprojectgroup1.ChatViewModel;
+import com.example.eecs4443groupprojectgroup1.Chat.Chat;
+import com.example.eecs4443groupprojectgroup1.Adapter.ChatAdapter;
+import com.example.eecs4443groupprojectgroup1.Chat.ChatViewModel;
 import com.example.eecs4443groupprojectgroup1.R;
 import com.example.eecs4443groupprojectgroup1.User.UserViewModel;
 import com.example.eecs4443groupprojectgroup1.Util_Helper.SharedPreferencesHelper;
@@ -38,38 +37,49 @@ public class ChatFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        // Inflate the layout for this fragment
+        // Inflate the fragment's layout
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
 
-        // Initialize ChatViewModel and UserViewModel
-        chatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
-        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        // Initialize view models and RecyclerView
+        initializeViews(view);
 
-        // Initialize RecyclerView
+        // Get current user ID from shared preferences
+        int currentUserId = SharedPreferencesHelper.getUserId(getContext());
+
+        // Observe the latest chat lists for the current user
+        observeChatList(currentUserId);
+
+        return view;
+    }
+
+    private void initializeViews(View view) {
+        // Initialize RecyclerView and layout manager
         recyclerView = view.findViewById(R.id.chats_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Initialize ChatAdapter with an empty list and pass userViewModel
-        chatAdapter = new ChatAdapter(getContext(), new ArrayList<>(), userViewModel, chatViewModel, friendId -> {
-            // Handle item click and start ChatActivity with friendId
-            Intent intent = new Intent(getActivity(), ChatActivity.class);
-            intent.putExtra("friendId", friendId);  // Pass the friendId to ChatActivity
-            startActivity(intent);
-        });
+        // Initialize ViewModels
+        chatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+
+        // Initialize the chat adapter
+        chatAdapter = new ChatAdapter(getContext(), new ArrayList<>(), userViewModel, chatViewModel, this::onChatItemClick);
         recyclerView.setAdapter(chatAdapter);
+    }
 
-        // Get current user id
-        int currentUserId = SharedPreferencesHelper.getUserId(getContext());
+    private void observeChatList(int currentUserId) {
+        // Observe the chat list for the current user and update the adapter
+        chatViewModel.getLatestChatListsForUser(currentUserId).observe(getViewLifecycleOwner(), this::updateChatList);
+    }
 
-        // Observe the chat list for the current user
-        chatViewModel.getLatestChatListsForUser(currentUserId).observe(getViewLifecycleOwner(), new Observer<List<Chat>>() {
-            @Override
-            public void onChanged(List<Chat> chats) {
-                // Update the adapter with the latest chat list
-                chatAdapter.setChatList(chats);
-            }
-        });
+    private void updateChatList(List<Chat> chats) {
+        // Update the chat list in the adapter
+        chatAdapter.setChatList(chats);
+    }
 
-        return view;
+    private void onChatItemClick(int friendId) {
+        // Handle chat item click and start ChatActivity
+        Intent intent = new Intent(getActivity(), ChatActivity.class);
+        intent.putExtra("friendId", friendId);  // Pass the friend ID to ChatActivity
+        startActivity(intent);
     }
 }

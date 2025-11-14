@@ -23,6 +23,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.eecs4443groupprojectgroup1.User.User;
 import com.example.eecs4443groupprojectgroup1.Util_Helper.DialogHelper;
 import com.example.eecs4443groupprojectgroup1.Util_Helper.ImageUtil;
 import com.example.eecs4443groupprojectgroup1.R;
@@ -37,11 +38,12 @@ public class ProfileActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST = 200;
 
     private UserViewModel userViewModel;
+    private int currentUserId;
+
     private ImageButton backButton;
     private ImageView userIcon;
     private TextView userName, userDescription, userEmail, userDateOfBirth, userGender;
 
-    private int currentUserId;
     private LinearLayout descriptionLayout, emailLayout, dateOfBirthLayout, genderLayout, passwordLayout;
     private FrameLayout userIconLayout;
 
@@ -51,16 +53,29 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.profile);
 
         // Retrieve currentUserId using SharedPreferencesHelper
-        currentUserId = SharedPreferencesHelper.getUserId(ProfileActivity.this);
-
+        currentUserId = SharedPreferencesHelper.getUserId(this);
         if (currentUserId == -1) {
             Toast.makeText(this, "User not found", Toast.LENGTH_SHORT).show();
-            finish();  // Exit if the user is not found
+            finish(); // Exit if the user is not found
             return;
         }
 
+        // Initialize ViewModel
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
+        // Bind UI components
+        initializeUI();
+
+        // Load user data
+        loadUserData();
+
+        // Set up listeners for updating user data
+        setUpClickListeners();
+    }
+
+    // Initialize UI components
+    private void initializeUI() {
+        backButton = findViewById(R.id.back_button);
         userIcon = findViewById(R.id.user_icon);
         userName = findViewById(R.id.user_name);
         userDescription = findViewById(R.id.user_description);
@@ -75,69 +90,84 @@ public class ProfileActivity extends AppCompatActivity {
         passwordLayout = findViewById(R.id.updateUser_password);
         userIconLayout = findViewById(R.id.updateUser_icon);
 
-        backButton = findViewById(R.id.back_button);
+        // Back button to return to HomeActivity
         backButton.setOnClickListener(v -> {
-            SharedPreferencesHelper.saveCurrentTab(ProfileActivity.this, "SETTINGS");
-            startActivity(new Intent(ProfileActivity.this, HomeActivity.class));
+            SharedPreferencesHelper.saveCurrentTab(this, "SETTINGS");
+            startActivity(new Intent(this, HomeActivity.class));
             finish();
         });
+    }
 
+    // Load user data from ViewModel
+    private void loadUserData() {
         userViewModel.getUserById(currentUserId).observe(this, user -> {
             if (user != null) {
-                // Update UI with user data
-                userName.setText(user.username != null ? user.username : "Name");
-                userDescription.setText(user.description != null ? user.description : "User has no description.");
-                userEmail.setText(user.email != null ? user.email : "No email provided");
-                userDateOfBirth.setText(user.dateOfBirth != null ? user.dateOfBirth : "Birthday not set");
-                userGender.setText(user.gender != null ? user.gender : "Unspecified");
-
-                // Handle profile image
-                if (user.userIcon != null) {
-                    Bitmap bitmap = ImageUtil.decodeFromBase64(user.userIcon);
-                    if (bitmap != null) userIcon.setImageBitmap(bitmap);
-                } else {
-                    userIcon.setImageResource(R.drawable.user_icon);
-                }
+                updateUIWithUserData(user);
             } else {
-                // Default data if user is not found in the database
-                userName.setText("Name");
-                userDescription.setText("User has no description.");
-                userEmail.setText("No email provided");
-                userDateOfBirth.setText("Birthday not set");
-                userGender.setText("Unspecified");
-                userIcon.setImageResource(R.drawable.user_icon);
+                setDefaultUserData();
             }
         });
+    }
 
-        // Click listeners for updating user data
-        descriptionLayout.setOnClickListener(v -> DialogHelper.showDescriptionEditDialog(ProfileActivity.this, currentUserId, userViewModel));
-        emailLayout.setOnClickListener(v -> DialogHelper.showEmailEditDialog(ProfileActivity.this, currentUserId, userViewModel));
-        dateOfBirthLayout.setOnClickListener(v -> DialogHelper.showDateOfBirthDialog(ProfileActivity.this, currentUserId, userViewModel));
-        genderLayout.setOnClickListener(v -> DialogHelper.showGenderEditDialog(ProfileActivity.this, currentUserId, userViewModel));
-        passwordLayout.setOnClickListener(v -> DialogHelper.showPasswordChangeDialog(ProfileActivity.this, currentUserId, userViewModel));
+    // Update UI with user data
+    private void updateUIWithUserData(User user) {
+        userName.setText(user.username != null ? user.username : "Name");
+        userDescription.setText(user.description != null ? user.description : "User has no description.");
+        userEmail.setText(user.email != null ? user.email : "No email provided");
+        userDateOfBirth.setText(user.dateOfBirth != null ? user.dateOfBirth : "Birthday not set");
+        userGender.setText(user.gender != null ? user.gender : "Unspecified");
 
-        // User icon click -> pick image from gallery or remove image
-        userIconLayout.setOnClickListener(v -> {
-            String[] options = {"Default Image", "Choose from Gallery"};
+        // Handle profile image
+        if (user.userIcon != null) {
+            Bitmap bitmap = ImageUtil.decodeFromBase64(user.userIcon);
+            if (bitmap != null) {
+                userIcon.setImageBitmap(bitmap);
+            }
+        } else {
+            userIcon.setImageResource(R.drawable.user_icon);
+        }
+    }
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
-            builder.setTitle("Profile Image");
-            builder.setItems(options, (dialog, which) -> {
-                switch (which) {
-                    case 0:
-                        // Remove image
-                        userViewModel.updateUserIconById(currentUserId, null);
-                        userIcon.setImageResource(R.drawable.user_icon);
-                        break;
+    // Set default data if user is not found in the database
+    private void setDefaultUserData() {
+        userName.setText("Name");
+        userDescription.setText("User has no description.");
+        userEmail.setText("No email provided");
+        userDateOfBirth.setText("Birthday not set");
+        userGender.setText("Unspecified");
+        userIcon.setImageResource(R.drawable.user_icon);
+    }
 
-                    case 1:
-                        // Open gallery to pick an image
-                        checkPermissionAndOpenGallery();
-                        break;
-                }
-            });
-            builder.show();
+    // Set up listeners for updating user data
+    private void setUpClickListeners() {
+        descriptionLayout.setOnClickListener(v -> DialogHelper.showDescriptionEditDialog(this, currentUserId, userViewModel));
+        emailLayout.setOnClickListener(v -> DialogHelper.showEmailEditDialog(this, currentUserId, userViewModel));
+        dateOfBirthLayout.setOnClickListener(v -> DialogHelper.showDateOfBirthDialog(this, currentUserId, userViewModel));
+        genderLayout.setOnClickListener(v -> DialogHelper.showGenderEditDialog(this, currentUserId, userViewModel));
+        passwordLayout.setOnClickListener(v -> DialogHelper.showPasswordChangeDialog(this, currentUserId, userViewModel));
+
+        // Handle profile image update
+        userIconLayout.setOnClickListener(v -> showImageOptionsDialog());
+    }
+
+    // Show dialog for selecting profile image options
+    private void showImageOptionsDialog() {
+        String[] options = {"Default Image", "Choose from Gallery"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Profile Image");
+        builder.setItems(options, (dialog, which) -> {
+            switch (which) {
+                case 0: // Remove image
+                    userViewModel.updateUserIconById(currentUserId, null);
+                    userIcon.setImageResource(R.drawable.user_icon);
+                    break;
+                case 1: // Open gallery to pick an image
+                    checkPermissionAndOpenGallery();
+                    break;
+            }
         });
+        builder.show();
     }
 
     // Check permissions and open gallery if permission is granted
@@ -190,8 +220,6 @@ public class ProfileActivity extends AppCompatActivity {
             if (selectedImageUri != null) {
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
-
-                    // Compress and encode to Base64 (max 432x432, quality 80)
                     String base64String = ImageUtil.encodeToBase64(bitmap, 432, 432, 80);
 
                     // Update ImageView
@@ -200,7 +228,6 @@ public class ProfileActivity extends AppCompatActivity {
 
                     // Save to DB
                     userViewModel.updateUserIconById(currentUserId, base64String);
-
                 } catch (IOException e) {
                     e.printStackTrace();
                     Toast.makeText(this, "Failed to load image.", Toast.LENGTH_SHORT).show();

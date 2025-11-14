@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.example.eecs4443groupprojectgroup1.CreateChatActivity;
 import com.example.eecs4443groupprojectgroup1.R;
 import com.example.eecs4443groupprojectgroup1.Util_Helper.SharedPreferencesHelper;
 
@@ -30,37 +29,42 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page);
 
-        // Find views by their IDs
+        initializeViews();
+        setDefaultTabAndIndicators();
+
+        // Set up listeners for taskbar icons and actions
+        setListeners();
+    }
+
+    private void initializeViews() {
+        // Initialize taskbar icons
         taskbarFriends = findViewById(R.id.taskbar_friends);
         taskbarChat = findViewById(R.id.taskbar_chat);
         taskbarSettings = findViewById(R.id.taskbar_settings);
+
+        // Initialize top bar and other icons
         topBarTitle = findViewById(R.id.top_bar_title);
         searchIcon = findViewById(R.id.search_icon);
         createChatIcon = findViewById(R.id.CreateChat_icon);
 
-
-        // Find indicator views (must be declared in XML layout)
+        // Initialize indicators
         indicatorFriends = findViewById(R.id.indicator_friends);
         indicatorChat = findViewById(R.id.indicator_chat);
         indicatorSettings = findViewById(R.id.indicator_settings);
+    }
 
-        // Set default fragment and indicator based on shared preferences
-        Tab savedTab = getSavedTab();
+    private void setDefaultTabAndIndicators() {
+        Tab savedTab = getSavedTab(); // Retrieve saved tab or default to CHAT
         selectTab(savedTab);
-        SharedPreferencesHelper.saveCurrentTab(HomeActivity.this, "CHAT");
+        SharedPreferencesHelper.saveCurrentTab(HomeActivity.this, "CHAT"); // Set default tab as "CHAT"
+    }
 
-        // Set click listeners
+    private void setListeners() {
         taskbarFriends.setOnClickListener(v -> selectTab(Tab.FRIENDS));
         taskbarChat.setOnClickListener(v -> selectTab(Tab.CHAT));
         taskbarSettings.setOnClickListener(v -> selectTab(Tab.SETTINGS));
-        searchIcon.setOnClickListener(v -> {
-            Intent intent = new Intent(HomeActivity.this, SearchFriendsActivity.class);
-            startActivity(intent);
-        });
-        createChatIcon.setOnClickListener( v -> {
-            Intent intent = new Intent(HomeActivity.this, CreateChatActivity.class);
-            startActivity(intent);
-        });
+        searchIcon.setOnClickListener(v -> startActivity(new Intent(HomeActivity.this, SearchFriendsActivity.class)));
+        createChatIcon.setOnClickListener(v -> startActivity(new Intent(HomeActivity.this, CreateChatActivity.class)));
     }
 
     private enum Tab {
@@ -68,27 +72,21 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void selectTab(Tab tab) {
-        // Hide all indicators first
-        indicatorFriends.setVisibility(View.INVISIBLE);
-        indicatorChat.setVisibility(View.INVISIBLE);
-        indicatorSettings.setVisibility(View.INVISIBLE);
-        searchIcon.setVisibility(View.GONE);
-        createChatIcon.setVisibility(View.GONE);
+        // Hide all indicators and icons before showing the selected tab
+        hideAllIndicators();
 
-        // Show selected indicator and update UI
+        // Switch fragment and update UI based on selected tab
         switch (tab) {
             case FRIENDS:
                 replaceFragment(new FriendsFragment());
                 updateTitle("Friends");
-                indicatorFriends.setVisibility(View.VISIBLE);
-                searchIcon.setVisibility(View.VISIBLE);
+                showIndicatorAndIcon(indicatorFriends, searchIcon);
                 break;
 
             case CHAT:
                 replaceFragment(new ChatFragment());
                 updateTitle("Chat");
-                indicatorChat.setVisibility(View.VISIBLE);
-                createChatIcon.setVisibility(View.VISIBLE);
+                showIndicatorAndIcon(indicatorChat, createChatIcon);
                 break;
 
             case SETTINGS:
@@ -97,6 +95,19 @@ public class HomeActivity extends AppCompatActivity {
                 indicatorSettings.setVisibility(View.VISIBLE);
                 break;
         }
+    }
+
+    private void hideAllIndicators() {
+        indicatorFriends.setVisibility(View.INVISIBLE);
+        indicatorChat.setVisibility(View.INVISIBLE);
+        indicatorSettings.setVisibility(View.INVISIBLE);
+        searchIcon.setVisibility(View.GONE);
+        createChatIcon.setVisibility(View.GONE);
+    }
+
+    private void showIndicatorAndIcon(View indicator, View icon) {
+        indicator.setVisibility(View.VISIBLE);
+        icon.setVisibility(View.VISIBLE);
     }
 
     private void replaceFragment(Fragment fragment) {
@@ -113,11 +124,7 @@ public class HomeActivity extends AppCompatActivity {
     // Retrieve saved tab from SharedPreferences (or default to CHAT if null)
     private Tab getSavedTab() {
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        String savedTab = sharedPreferences.getString(KEY_SELECTED_TAB, null); // Read saved tab, default to null
-        if (savedTab == null) {
-            return Tab.CHAT; // If null, return CHAT as default tab
-        } else {
-            return Tab.valueOf(savedTab); // Convert string back to enum
-        }
+        String savedTab = sharedPreferences.getString(KEY_SELECTED_TAB, null); // Default to null if not set
+        return savedTab == null ? Tab.CHAT : Tab.valueOf(savedTab); // Return CHAT if no saved tab exists
     }
 }

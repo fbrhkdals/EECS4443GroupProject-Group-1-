@@ -12,9 +12,10 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.eecs4443groupprojectgroup1.Friend;
-import com.example.eecs4443groupprojectgroup1.FriendViewModel;
-import com.example.eecs4443groupprojectgroup1.FriendsAdapter;
+import com.example.eecs4443groupprojectgroup1.Chat.ChatViewModel;
+import com.example.eecs4443groupprojectgroup1.Friend.Friend;
+import com.example.eecs4443groupprojectgroup1.Friend.FriendViewModel;
+import com.example.eecs4443groupprojectgroup1.Adapter.FriendsAdapter;
 import com.example.eecs4443groupprojectgroup1.R;
 import com.example.eecs4443groupprojectgroup1.User.UserRepository;
 import com.example.eecs4443groupprojectgroup1.Util_Helper.SharedPreferencesHelper;
@@ -28,6 +29,7 @@ public class FriendsFragment extends Fragment {
     private RecyclerView recyclerView;
     private FriendsAdapter friendsAdapter;
     private FriendViewModel friendViewModel;
+    private ChatViewModel chatViewModel;
     private UserRepository userRepository;
     private List<Friend> pendingList = new ArrayList<>();
     private List<Friend> acceptedList = new ArrayList<>();
@@ -50,15 +52,17 @@ public class FriendsFragment extends Fragment {
 
         // Initialize FriendViewModel using a custom Factory
         AppDatabase appDatabase = AppDatabase.getInstance(getContext()); // Get database instance
-        FriendViewModel.Factory factory = new FriendViewModel.Factory(appDatabase);
-        friendViewModel = new ViewModelProvider(this, factory).get(FriendViewModel.class);
+        FriendViewModel.Factory factoryFriend = new FriendViewModel.Factory(appDatabase);
+        friendViewModel = new ViewModelProvider(this, factoryFriend).get(FriendViewModel.class);
+        chatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
 
         // Initialize the RecyclerView adapter with an empty list for now
         friendsAdapter = new FriendsAdapter(
                 new ArrayList<Friend>(), // initial empty list
                 userRepository,
                 getViewLifecycleOwner(),
-                friendViewModel
+                friendViewModel,
+                chatViewModel
         );
         recyclerView.setAdapter(friendsAdapter); // Set adapter to RecyclerView
 

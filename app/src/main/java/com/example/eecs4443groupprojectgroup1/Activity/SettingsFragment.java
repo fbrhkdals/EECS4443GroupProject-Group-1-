@@ -26,20 +26,21 @@ public class SettingsFragment extends Fragment {
 
     private UserViewModel userViewModel;
 
-    private ImageView userIcon;
-    private TextView userName;
-    private TextView userDescription;
-    private LinearLayout signOutLayout;
-    private LinearLayout settingsLayout;
+    private ImageView userIcon; // ImageView to display the user's icon
+    private TextView userName; // TextView to display the user's name
+    private TextView userDescription; // TextView to display the user's description
+    private LinearLayout signOutLayout; // Layout to handle sign-out action
+    private LinearLayout settingsLayout; // Layout to navigate to the profile settings
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        // Inflate the fragment's layout
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
-        // Find views
+        // Find the views in the fragment layout
         userIcon = view.findViewById(R.id.user_icon);
         userName = view.findViewById(R.id.user_name);
         userDescription = view.findViewById(R.id.user_description);
@@ -49,55 +50,55 @@ public class SettingsFragment extends Fragment {
         // Get the current user's ID from SharedPreferences using SharedPreferencesHelper
         int currentUserId = SharedPreferencesHelper.getUserId(requireActivity());
 
+        // If the user ID is not found (invalid), show default values in the UI
         if (currentUserId == -1) {
-            // If userId is not found, show default values
             userName.setText("Name");
             userDescription.setText("User has no description.");
             userIcon.setImageResource(R.drawable.user_icon);
             return view;
         }
 
-        // Save the current tab as "CHAT" using SharedPreferencesHelper
+        // Save the current tab as "CHAT" in SharedPreferences (likely for navigating tabs)
         SharedPreferencesHelper.saveCurrentTab(requireActivity(), "CHAT");
 
-        // Initialize ViewModel
+        // Initialize the UserViewModel to interact with user data
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
-        // Observe user data by userId
+        // Observe user data by the user's ID from the ViewModel
         userViewModel.getUserById(currentUserId).observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
-                // Set name
+                // Set the username, if it exists. Otherwise, set a default "Name".
                 userName.setText((user.username != null && !user.username.isEmpty()) ? user.username : "Name");
 
-                // Set description
+                // Set the user description. If it doesn't exist, set the default message.
                 userDescription.setText((user.description != null && !user.description.isEmpty()) ? user.description : "User has no description.");
 
-                // Set image
+                // Set the user icon if available. Otherwise, set a default icon.
                 if (user.userIcon != null && !user.userIcon.isEmpty()) {
-                    Bitmap bitmap = ImageUtil.decodeFromBase64(user.userIcon);
+                    Bitmap bitmap = ImageUtil.decodeFromBase64(user.userIcon); // Decode the Base64 icon string to Bitmap
                     if (bitmap != null) {
-                        userIcon.setImageBitmap(bitmap);
+                        userIcon.setImageBitmap(bitmap); // Set the decoded image as the user's icon
                     } else {
-                        userIcon.setImageResource(R.drawable.user_icon);
+                        userIcon.setImageResource(R.drawable.user_icon); // Default icon if decoding fails
                     }
                 } else {
-                    userIcon.setImageResource(R.drawable.user_icon);
+                    userIcon.setImageResource(R.drawable.user_icon); // Default icon if no user icon is found
                 }
             } else {
-                // User not found in DB, show defaults
+                // If the user is not found in the database, show the default values
                 userName.setText("Name");
                 userDescription.setText("User has no description.");
                 userIcon.setImageResource(R.drawable.user_icon);
             }
         });
 
-        // Handle sign out
+        // Handle the sign-out action by clicking the sign-out layout
         signOutLayout.setOnClickListener(v -> SignOutHelper.signOut(requireActivity()));
 
-        // Navigate to ProfileActivity
+        // Handle the navigation to the ProfileActivity when clicking the settings layout
         settingsLayout.setOnClickListener(v -> {
             Intent intent = new Intent(requireActivity(), ProfileActivity.class);
-            startActivity(intent);
+            startActivity(intent); // Start ProfileActivity to allow the user to update their profile settings
         });
 
         return view;

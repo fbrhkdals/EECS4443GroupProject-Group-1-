@@ -1,7 +1,6 @@
 package com.example.eecs4443groupprojectgroup1.Util_Helper;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 
 import com.example.eecs4443groupprojectgroup1.Activity.MainActivity;

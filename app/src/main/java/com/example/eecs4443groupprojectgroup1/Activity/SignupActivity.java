@@ -20,57 +20,59 @@ import com.google.android.material.button.MaterialButton;
 
 public class SignupActivity extends AppCompatActivity {
 
-    private EditText usernameInput, passwordInput, emailInput;
-    private MaterialButton signupBtn;
-    private UserViewModel userViewModel;
+    private EditText usernameInput, passwordInput, emailInput;  // Input fields for username, password, and email
+    private MaterialButton signupBtn; // Button to trigger the signup action
+    private UserViewModel userViewModel; // ViewModel to interact with user data
 
-    private TextView usernameError, passwordError, emailError;
-    private ImageView passwordToggleIcon;
+    private TextView usernameError, passwordError, emailError; // TextViews to show error messages
+    private ImageView passwordToggleIcon; // Icon to toggle password visibility
 
-    private boolean isPasswordVisible = false;
-    private boolean userCreationSuccess = false;
+    private boolean isPasswordVisible = false; // Flag to track password visibility
+    private boolean userCreationSuccess = false; // Flag to track signup success
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.signup_page);
 
-        // Initialize UI components
+        // Initialize the UI components
         usernameInput = findViewById(R.id.username_input);
         passwordInput = findViewById(R.id.password_input);
         emailInput = findViewById(R.id.email_input);
         signupBtn = findViewById(R.id.signup_btn);
         passwordToggleIcon = findViewById(R.id.password_toggle_icon);
 
-        // Initialize TextViews for error messages
+        // Initialize error message TextViews
         usernameError = findViewById(R.id.username_error);
         passwordError = findViewById(R.id.password_error);
         emailError = findViewById(R.id.email_error);
 
-        // Initialize ViewModel
+        // Initialize the ViewModel
         userViewModel = new ViewModelProvider.AndroidViewModelFactory(getApplication())
                 .create(UserViewModel.class);
 
-        // Back button: navigate to MainActivity and finish
+        // Back button: navigate to MainActivity and finish SignupActivity
         findViewById(R.id.back_button).setOnClickListener(v -> {
             startActivity(new Intent(SignupActivity.this, MainActivity.class));
             finish();
         });
 
-        // Password visibility toggle icon click
+        // Toggle password visibility on click of the eye icon
         passwordToggleIcon.setOnClickListener(v -> togglePasswordVisibility());
 
         // Signup button logic
         signupBtn.setOnClickListener(v -> {
+            // Get user input values and trim whitespace
             String username = usernameInput.getText().toString().trim();
             String password = passwordInput.getText().toString().trim();
             String email = emailInput.getText().toString().trim();
 
+            // Flags to track validation errors
             boolean isUsernameError = false;
             boolean isPasswordError = false;
             boolean isEmailError = false;
 
-            // Validate Username
+            // Validate username
             if (username.isEmpty()) {
                 usernameError.setText(getString(R.string.error_username_required));
                 usernameError.setVisibility(View.VISIBLE);
@@ -105,29 +107,31 @@ public class SignupActivity extends AppCompatActivity {
                 emailError.setVisibility(View.GONE);
             }
 
-            // If any field has error, do not proceed
+            // If any validation failed, prevent further signup
             if (isUsernameError || isPasswordError || isEmailError) {
                 return;
             }
 
-            // Check if user exists asynchronously
+            // Asynchronously check if the username is already taken
             userViewModel.getUserByUsername(username).observe(SignupActivity.this, user -> {
                 if (user != null && !userCreationSuccess) {
-                    // Username already exists
+                    // If the user already exists, show an error
                     usernameError.setText(getString(R.string.error_username_exists));
                     usernameError.setVisibility(View.VISIBLE);
                 } else {
-                    // Username is unique, proceed with signup
+                    // If username is available, proceed with creating a new user
                     User newUser = new User();
                     newUser.username = username;
                     newUser.password = password;
                     newUser.email = email;
 
+                    // Insert the new user into the database
                     userViewModel.insert(newUser);
 
-                    // Mark signup success
+                    // Mark user creation as successful
                     userCreationSuccess = true;
 
+                    // Show success message and navigate to MainActivity
                     Toast.makeText(SignupActivity.this, "Signup successful!", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(SignupActivity.this, MainActivity.class));
                     finish();
@@ -137,29 +141,32 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     /**
-     * Checks if password is valid (at least one uppercase and one special character)
+     * Checks if the password meets the required strength (at least one uppercase letter and one special character).
+     * @param password The password to validate
+     * @return true if password is valid, false otherwise
      */
     private boolean isValidPassword(String password) {
-        boolean hasUppercase = !password.equals(password.toLowerCase());
-        boolean hasSpecial = password.matches(".*[^a-zA-Z0-9].*");
+        boolean hasUppercase = !password.equals(password.toLowerCase()); // Check for at least one uppercase letter
+        boolean hasSpecial = password.matches(".*[^a-zA-Z0-9].*"); // Check for at least one special character
         return hasUppercase && hasSpecial;
     }
 
     /**
-     * Toggles password visibility
+     * Toggles password visibility (between visible and hidden).
      */
     private void togglePasswordVisibility() {
         if (isPasswordVisible) {
-            // Hide password
+            // Hide the password
             passwordInput.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            passwordToggleIcon.setImageResource(R.drawable.notview);
+            passwordToggleIcon.setImageResource(R.drawable.notview); // Set the "eye closed" icon
         } else {
-            // Show password
+            // Show the password
             passwordInput.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-            passwordToggleIcon.setImageResource(R.drawable.view);
+            passwordToggleIcon.setImageResource(R.drawable.view); // Set the "eye open" icon
         }
 
+        // Update the password visibility flag
         isPasswordVisible = !isPasswordVisible;
-        passwordInput.setSelection(passwordInput.length());
+        passwordInput.setSelection(passwordInput.length()); // Keep the cursor at the end of the text
     }
 }

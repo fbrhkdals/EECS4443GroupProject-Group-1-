@@ -1,4 +1,4 @@
-package com.example.eecs4443groupprojectgroup1;
+package com.example.eecs4443groupprojectgroup1.Friend;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;

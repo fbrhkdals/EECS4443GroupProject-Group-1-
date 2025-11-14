@@ -1,4 +1,4 @@
-package com.example.eecs4443groupprojectgroup1;
+package com.example.eecs4443groupprojectgroup1.Adapter;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -12,6 +12,10 @@ import android.widget.Button;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.eecs4443groupprojectgroup1.Activity.ChatActivity;
+import com.example.eecs4443groupprojectgroup1.Friend.Friend;
+import com.example.eecs4443groupprojectgroup1.Friend.FriendViewModel;
+import com.example.eecs4443groupprojectgroup1.R;
 import com.example.eecs4443groupprojectgroup1.User.UserRepository;
 import com.example.eecs4443groupprojectgroup1.User.UserViewModel;
 import com.example.eecs4443groupprojectgroup1.Util_Helper.ImageUtil;
@@ -25,7 +29,7 @@ public class CreateChatAdapter extends RecyclerView.Adapter<CreateChatAdapter.Fr
     private List<Friend> fullFriendsList; // Full list of friends (unfiltered)
     private UserRepository userRepository; // Repository for fetching user data
     private FriendViewModel friendViewModel; // ViewModel for managing friend-related data
-    private UserViewModel userViewModel; // UserViewModel to manage user data
+    private UserViewModel userViewModel; // ViewModel for managing user data
     private LifecycleOwner lifecycleOwner; // LifecycleOwner to observe LiveData and manage lifecycle
 
     // Constructor to initialize the adapter with necessary data sources
@@ -53,25 +57,26 @@ public class CreateChatAdapter extends RecyclerView.Adapter<CreateChatAdapter.Fr
         }
     }
 
-    // Creates and returns a new ViewHolder for each item in the RecyclerView
+    // onCreateViewHolder: Creates and returns a new ViewHolder for each item in the RecyclerView
     @Override
     public FriendViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        // Inflate the layout for the friend item and create a new ViewHolder
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.user_item, parent, false);
         return new FriendViewHolder(view); // Return the ViewHolder with the inflated view
     }
 
-    // Binds the data for a friend to the ViewHolder at a given position in the list
+    // onBindViewHolder: Binds data for a specific friend to the ViewHolder at a given position in the list
     @Override
     public void onBindViewHolder(FriendViewHolder holder, int position) {
         // Get the friend object at the given position
         Friend friend = friends.get(position);
-        bindFriend(holder, friend); // Bind the data of the friend to the ViewHolder
+        bindFriend(holder, friend); // Bind the friend's data to the ViewHolder
 
         // Set the visibility of the 'add_friend_button' to GONE (hide it)
         holder.addFriendButton.setVisibility(View.GONE); // Hide the button
 
-        // Set click listener to navigate to ChatActivity when an item is clicked
+        // Set a click listener to navigate to ChatActivity when an item is clicked
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), ChatActivity.class);
             intent.putExtra("friendId", friend.userId); // Pass the friend's ID
@@ -79,9 +84,8 @@ public class CreateChatAdapter extends RecyclerView.Adapter<CreateChatAdapter.Fr
         });
     }
 
-    // Helper method to bind a friend's data to the ViewHolder
+    // Helper method: Binds the friend's data to the ViewHolder
     private void bindFriend(FriendViewHolder holder, Friend friend) {
-
         // Observe the user data from the UserRepository using LiveData
         userRepository.getUserById(friend.userId).observe(lifecycleOwner, user -> {
             if (user != null) {
@@ -104,13 +108,13 @@ public class CreateChatAdapter extends RecyclerView.Adapter<CreateChatAdapter.Fr
         });
     }
 
-    // Returns the total number of friends in the list
+    // getItemCount: Returns the total number of items (friends) in the list
     @Override
     public int getItemCount() {
-        return friends.size(); // Return the size of the friend list (number of items in RecyclerView)
+        return friends.size(); // Return the size of the friends list
     }
 
-    // Method to update the list of friends in the adapter and notify the RecyclerView to refresh
+    // updateFriends: Updates the list of friends in the adapter and notifies RecyclerView to refresh
     public void updateFriends(List<Friend> newFriends) {
         if (newFriends != null) {
             // Update the friends list with new data and make a copy to prevent external modifications
@@ -120,18 +124,18 @@ public class CreateChatAdapter extends RecyclerView.Adapter<CreateChatAdapter.Fr
         }
     }
 
-    // Method to filter friends by name
+    // filterUsers: Filters friends by their name based on the search query
     public void filterUsers(String query) {
         if (query == null || query.isEmpty()) {
-            // If query is empty, show the full list
-            friends = new ArrayList<>(fullFriendsList); // Reset the list to the full list
-            notifyDataSetChanged();
+            // If the query is empty, reset the list to the full list of friends
+            friends = new ArrayList<>(fullFriendsList); // Reset to the full list
+            notifyDataSetChanged(); // Notify RecyclerView to refresh
         } else {
-            // Create a filtered list that will hold matching friends
+            // Create a filtered list to hold matching friends
             List<Friend> filteredList = new ArrayList<>();
 
             // For each friend, check if their username matches the query
-            for (Friend friend : fullFriendsList) { // Use the full list for filtering
+            for (Friend friend : fullFriendsList) {
                 userViewModel.getUserById(friend.userId).observe(lifecycleOwner, user -> {
                     // Check if the username matches the search query (case-insensitive)
                     if (user != null && user.username.toLowerCase().contains(query.toLowerCase())) {
@@ -142,7 +146,7 @@ public class CreateChatAdapter extends RecyclerView.Adapter<CreateChatAdapter.Fr
                     // After the loop finishes, update the adapter with the filtered list
                     friends.clear();
                     friends.addAll(filteredList);
-                    notifyDataSetChanged();
+                    notifyDataSetChanged(); // Refresh the RecyclerView with the filtered list
                 });
             }
         }

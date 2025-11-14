@@ -1,4 +1,4 @@
-package com.example.eecs4443groupprojectgroup1;
+package com.example.eecs4443groupprojectgroup1.Chat;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -57,4 +57,10 @@ public interface ChatDao {
             "   OR (sender_id = :friendId AND receiver_id = :userId) " +
             "ORDER BY timestamp ASC")
     LiveData<List<Chat>> getChatBetweenUsers(int userId, int friendId);
+
+    // Delete all chats between the given user and friend (considering (user, friend) and (friend, user) as the same conversation pair).
+    @Query("DELETE FROM chats " +
+            "WHERE (sender_id = :user AND receiver_id = :friend) " +
+            "   OR (sender_id = :friend AND receiver_id = :user)")
+    void deleteChatBetweenUserAndFriend(int user, int friend);
 }

@@ -1,9 +1,8 @@
-package com.example.eecs4443groupprojectgroup1;
+package com.example.eecs4443groupprojectgroup1.Chat;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
-import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 

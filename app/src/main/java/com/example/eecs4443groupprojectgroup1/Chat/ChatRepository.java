@@ -1,4 +1,4 @@
-package com.example.eecs4443groupprojectgroup1;
+package com.example.eecs4443groupprojectgroup1.Chat;
 
 import android.content.Context;
 
@@ -47,5 +47,10 @@ public class ChatRepository {
     // Get all chat messages between current user and a friend, timestamp order
     public LiveData<List<Chat>> getChatBetweenUsers(int userId, int friendId) {
         return chatDao.getChatBetweenUsers(userId, friendId);
+    }
+
+    // Delete all chats between the current user and a friend
+    public void deleteChatBetweenUserAndFriend(int userId, int friendId) {
+        new Thread(() -> chatDao.deleteChatBetweenUserAndFriend(userId, friendId)).start();
     }
 }

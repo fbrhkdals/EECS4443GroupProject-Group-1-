@@ -12,23 +12,21 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.eecs4443groupprojectgroup1.R;
+import com.example.eecs4443groupprojectgroup1.User.User;
 import com.example.eecs4443groupprojectgroup1.User.UserViewModel;
 import com.example.eecs4443groupprojectgroup1.Util_Helper.SharedPreferencesHelper;
 import com.google.android.material.button.MaterialButton;
 
 public class MainActivity extends AppCompatActivity {
 
-    private EditText usernameInput;
-    private EditText passwordInput;
+    private EditText usernameInput, passwordInput;
     private CheckBox rememberMeCheckbox;
     private MaterialButton loginButton;
     private TextView createAccountText;
     private ImageView passwordToggleIcon;
 
     private UserViewModel userViewModel;
-
-    // Track password visibility state
-    private boolean isPasswordVisible = false;
+    private boolean isPasswordVisible = false; // Track password visibility state
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,39 +34,51 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Initialize views
+        initializeViews();
+
+        // Initialize ViewModel
+        userViewModel = new UserViewModel(getApplication());
+
+        // Check for auto-login using saved preferences
+        handleAutoLogin();
+
+        // Set underline for "Create Account" link
+        underlineCreateAccountLink();
+
+        // Set up listeners
+        setListeners();
+    }
+
+    // Initialize all views
+    private void initializeViews() {
         usernameInput = findViewById(R.id.username_input);
         passwordInput = findViewById(R.id.password_input);
         rememberMeCheckbox = findViewById(R.id.remember_me_checkbox);
         loginButton = findViewById(R.id.login_btn);
         createAccountText = findViewById(R.id.create_account_link);
         passwordToggleIcon = findViewById(R.id.password_toggle_icon);
+    }
 
-        // Initialize ViewModel
-        userViewModel = new UserViewModel(getApplication());
-
-        // Check for auto-login using saved preferences
-        int savedUserId = SharedPreferencesHelper.getUserId(this); // Use SharedPreferencesHelper
+    // Handle auto-login based on saved preferences
+    private void handleAutoLogin() {
+        int savedUserId = SharedPreferencesHelper.getUserId(this);
         boolean autoLogin = SharedPreferencesHelper.getAutoLogin(this);
 
         if (savedUserId != -1 && autoLogin) {
-            // If auto-login is enabled, navigate directly to HomeActivity
-            Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-            intent.putExtra("userId", savedUserId);
-            startActivity(intent);
-            finish(); // Prevent back navigation to login
-            return;
+            // Auto-login enabled, proceed to HomeActivity
+            navigateToHome(savedUserId);
         }
+    }
 
-        // Underline "Create Account"
+    // Underline the "Create Account" text
+    private void underlineCreateAccountLink() {
         createAccountText.setPaintFlags(createAccountText.getPaintFlags() | android.graphics.Paint.UNDERLINE_TEXT_FLAG);
+    }
 
-        // Login button click
+    // Set listeners for buttons and actions
+    private void setListeners() {
         loginButton.setOnClickListener(v -> attemptLogin());
-
-        // Create account link click
         createAccountText.setOnClickListener(v -> navigateToCreateAccount());
-
-        // Password visibility toggle icon click
         passwordToggleIcon.setOnClickListener(v -> togglePasswordVisibility());
     }
 
@@ -85,29 +95,34 @@ public class MainActivity extends AppCompatActivity {
         // Attempt login through ViewModel
         userViewModel.login(username, password).observe(this, user -> {
             if (user != null) {
-                Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show();
-
-                // Save user ID (for later use)
-                SharedPreferencesHelper.saveUserId(this, user.id); // Save userId using SharedPreferencesHelper
-                SharedPreferencesHelper.saveAutoLogin(this, rememberMeCheckbox.isChecked()); // Save autoLogin state
-
-                // Navigate to HomeActivity
-                navigateToHome(user.id);
+                handleSuccessfulLogin(user);
             } else {
                 Toast.makeText(this, "Invalid Username or password", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    // Navigate to home
+    // Handle successful login
+    private void handleSuccessfulLogin(User user) {
+        Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show();
+
+        // Save user ID and auto-login preference
+        SharedPreferencesHelper.saveUserId(this, user.id);
+        SharedPreferencesHelper.saveAutoLogin(this, rememberMeCheckbox.isChecked());
+
+        // Navigate to HomeActivity
+        navigateToHome(user.id);
+    }
+
+    // Navigate to HomeActivity
     private void navigateToHome(int userId) {
         Intent intent = new Intent(MainActivity.this, HomeActivity.class);
         intent.putExtra("userId", userId);
         startActivity(intent);
-        finish(); // Finish MainActivity so user can't go back
+        finish(); // Finish MainActivity to prevent back navigation
     }
 
-    // Navigate to create account
+    // Navigate to Create Account screen
     private void navigateToCreateAccount() {
         Intent intent = new Intent(MainActivity.this, SignupActivity.class);
         startActivity(intent);
@@ -124,9 +139,10 @@ public class MainActivity extends AppCompatActivity {
             passwordInput.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
             passwordToggleIcon.setImageResource(R.drawable.view);
         }
+
         isPasswordVisible = !isPasswordVisible;
 
-        // Move cursor to the end
+        // Move cursor to the end after changing the input type
         passwordInput.setSelection(passwordInput.length());
     }
 }

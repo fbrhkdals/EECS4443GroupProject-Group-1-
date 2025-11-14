@@ -1,4 +1,4 @@
-package com.example.eecs4443groupprojectgroup1;
+package com.example.eecs4443groupprojectgroup1.Chat;
 
 import android.app.Application;
 
@@ -42,5 +42,10 @@ public class ChatViewModel extends AndroidViewModel {
     // Get all chat messages between current user and a friend
     public LiveData<List<Chat>> getChatBetweenUsers(int userId, int friendId) {
         return chatRepository.getChatBetweenUsers(userId, friendId);
+    }
+
+    // Delete all chats between the current user and a friend
+    public void deleteChatBetweenUserAndFriend(int userId, int friendId) {
+        chatRepository.deleteChatBetweenUserAndFriend(userId, friendId);
     }
 }

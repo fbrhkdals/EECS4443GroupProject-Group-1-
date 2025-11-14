@@ -26,20 +26,29 @@
                 android:src="@drawable/user_icon"
                 android:visibility="gone"/>
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/chat_bubble_left"
+            android:elevation="4dp"
+            android:layout_margin="4dp"
+            android:orientation="vertical">
+
             <TextView
                 android:id="@+id/friend_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/chat_bubble_left"
                 android:textColor="@android:color/black"
-                android:elevation="4dp"
                 android:text=""
                 android:padding="12dp"
                 android:maxWidth="250dp"
                 android:visibility="gone"/>
+
+        </LinearLayout>
         </LinearLayout>
 
         <TextView
+            android:layout_margin="4dp"
             android:id="@+id/user_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -39,6 +39,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/messages_recycler_view"
         android:layout_width="match_parent"
+        android:background="@color/white"
         android:layout_height="0dp"
         android:layout_weight="1"/>
 

@@ -1,4 +1,4 @@
-package com.example.eecs4443groupprojectgroup1;
+package com.example.eecs4443groupprojectgroup1.Friend;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -132,7 +132,7 @@ public class FriendRepository {
 
     // Helper class to pair a user with their common friends count
     public static class UserWithCommonFriends {
-        User user;  // The User object representing the friend
+        public User user;  // The User object representing the friend
         int commonFriendsCount;  // The count of common friends with another user
 
         // Constructor to initialize the User and its common friends count
