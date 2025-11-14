@@ -3,7 +3,9 @@ package com.example.eecs4443groupprojectgroup1;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
 import androidx.room.Index;
+import androidx.room.PrimaryKey;
 
 // Entity for storing chat messages
 @Entity(
@@ -22,10 +24,13 @@ import androidx.room.Index;
                         onDelete = ForeignKey.CASCADE
                 )
         },
-        primaryKeys = {"sender_id","receiver_id"},
-        indices = { @Index(value = {"sender_id","receiver_id"}, unique = true) }
+        indices = {@Index(value = {"sender_id", "receiver_id"})}
 )
 public class Chat {
+
+    @ColumnInfo(name = "message_id")
+    @PrimaryKey(autoGenerate = true)
+    public int messageId;
 
     @ColumnInfo(name = "sender_id")
     public int senderId; // ID of the user who sent the message (references User.id)

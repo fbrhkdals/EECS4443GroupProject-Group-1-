@@ -6,17 +6,20 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
+import com.example.eecs4443groupprojectgroup1.Chat;
+import com.example.eecs4443groupprojectgroup1.ChatDao;
 import com.example.eecs4443groupprojectgroup1.FriendsDao;
 import com.example.eecs4443groupprojectgroup1.User.User;
 import com.example.eecs4443groupprojectgroup1.User.UserDao;
 import com.example.eecs4443groupprojectgroup1.Friend;
 
-@Database(entities = {User.class, Friend.class}, version = 1) // Added Friend.class here
+@Database(entities = {User.class, Friend.class, Chat.class}, version = 1) // Added Friend.class here
 public abstract class AppDatabase extends RoomDatabase {
 
     // Abstract methods to get DAO instances
     public abstract UserDao userDao();
     public abstract FriendsDao friendDao();
+    public abstract ChatDao chatDao();
 
     // Singleton instance to ensure only one instance of the database is created
     private static volatile AppDatabase INSTANCE;
