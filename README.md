@@ -9,7 +9,7 @@ Blabla is a real-time messaging app designed for chatting with friends. The app 
 - **Login**: Users can log in with their credentials after registration.
 - **Profile Update**: Users can update their profile picture and information.
 - **Auto-login**: The app stores login information for seamless auto-login.
-- **Friend Management**: Add or remove friends from your friend list. The list is sorted alphabetically.
+- **Friend Management**: Add or delete friends from your friend list. The list is sorted alphabetically. Also deleting friend will also delete chat room.
 - **Friend Search**: Users can search for friends by name, and mutual friends will be suggested.
 - **Friend Profile**: Tap on a friend’s profile to view detailed information.
 - **Chatting**: Create and manage chat rooms, and send real-time messages.
