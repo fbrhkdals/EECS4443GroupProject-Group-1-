@@ -22,6 +22,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@android:color/transparent"
+            android:contentDescription="Back to previous page"
             android:src="@drawable/arrow_back" />
 
         <TextView
@@ -69,6 +70,7 @@
                         android:background="@drawable/circle_background"
                         android:clipToOutline="true"
                         android:scaleType="centerCrop"
+                        android:contentDescription="Change Profile"
                         android:src="@drawable/user_icon" />
 
                     <ImageView
