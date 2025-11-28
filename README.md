@@ -1,4 +1,4 @@
-# Blabla Chat App
+# Blabla Chat App(quickcomms)
 
 Blabla is a real-time messaging app designed for chatting with friends. The app includes essential features like account creation, profile updates, friend management, and chat functionality.
 
